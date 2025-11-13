@@ -11,7 +11,7 @@ the_content(); ?>
 
 
 
-
+    bemazal-theme
 
 
     <div class="container">
