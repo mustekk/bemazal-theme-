@@ -1,0 +1,35 @@
+// ========================================
+// Custom Mixins
+// ========================================
+//
+// Define reusable mixins here for common patterns.
+//
+
+// Example: Responsive font sizes
+// @mixin responsive-font($min-size, $max-size) {
+//   font-size: clamp(#{$min-size}rem, 2vw + 1rem, #{$max-size}rem);
+// }
+
+// Example: Flexbox centering
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+// Example: Aspect ratio container
+// @mixin aspect-ratio($width, $height) {
+//   position: relative;
+//   &::before {
+//     content: '';
+//     display: block;
+//     padding-top: ($height / $width) * 100%;
+//   }
+// }
+
+// Example: Truncate text
+@mixin truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

@@ -1,0 +1,49 @@
+// ========================================
+// Base Reset & Normalization
+// ========================================
+//
+// Additional resets and base styles that complement Bootstrap.
+//
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+// Improve media defaults
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+// Remove default margins on common elements
+h1, h2, h3, h4, h5, h6,
+p, figure, blockquote, dl, dd {
+  margin: 0;
+}
+
+// Smooth scrolling
+html {
+  scroll-behavior: smooth;
+}
+
+// Improve form controls
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+
+// Remove default button styles
+button {
+  border: none;
+  background: none;
+  cursor: pointer;
+}

@@ -1,0 +1,112 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 2,
+  "name": "tg/thumbs-gallery",
+  "title": "Swiper Thumbs Gallery",
+  "category": "media",
+  "icon": "format-gallery",
+  "description": "Галерея на Swiper с миниатюрами и фиксированными размерами и поддержкой Fancybox.",
+  "keywords": [
+    "swiper",
+    "gallery",
+    "thumbnails",
+    "slider",
+    "fancybox"
+  ],
+  "supports": {
+    "align": [
+      "wide",
+      "full"
+    ],
+    "anchor": true,
+    "spacing": {
+      "margin": true,
+      "padding": true
+    }
+  },
+  "attributes": {
+    "images": {
+      "type": "array",
+      "default": [],
+      "items": {
+        "type": "object"
+      }
+    },
+    "mainW": {
+      "type": "number",
+      "default": 720
+    },
+    "mainH": {
+      "type": "number",
+      "default": 480
+    },
+    "thumbW": {
+      "type": "number",
+      "default": 120
+    },
+    "thumbH": {
+      "type": "number",
+      "default": 80
+    },
+    "gap": {
+      "type": "number",
+      "default": 8
+    },
+    "radius": {
+      "type": "number",
+      "default": 12
+    },
+    "nav": {
+      "type": "boolean",
+      "default": true
+    },
+    "mainSize": {
+      "type": "string",
+      "default": "medium"
+    },
+    "thumbSize": {
+      "type": "string",
+      "default": "thumbnail"
+    },
+    "linkSize": {
+      "type": "string",
+      "default": "full"
+    },
+    "autoplay": {
+      "type": "boolean",
+      "default": true
+    },
+    "autoplayDelay": {
+      "type": "number",
+      "default": 3000
+    },
+    "pauseOnHover": {
+      "type": "boolean",
+      "default": true
+    },
+    "loop": {
+      "type": "boolean",
+      "default": true
+    },
+    "maxW": {
+      "type": "number",
+      "default": 700
+    },
+    "maxH": {
+      "type": "number",
+      "default": 0
+    },
+    "ratio": {
+      "type": "string",
+      "default": "auto"
+    },
+    "thumbSizePx": {
+      "type": "number",
+      "default": 50
+    }
+  },
+  "editorScript": "file:./index.js",
+  "style": "file:./style.css",
+  "editorStyle": "file:./editor.css",
+  "version": "2.1.0"
+}

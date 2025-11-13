@@ -1,0 +1,55 @@
+// ========================================
+// Main SCSS Entry Point
+// ========================================
+//
+// This is the main SCSS file for Bemazal theme.
+// Files are organized using the 7-1 architecture pattern:
+//
+// abstracts/  - Variables, mixins, functions
+// base/       - Reset, typography, base styles
+// components/ - Buttons, cards, forms, etc.
+// layout/     - Header, footer, navigation, etc.
+//
+// Import order is important:
+// 1. Bootstrap (with @use - MUST be first!)
+// 2. Abstracts (variables/mixins)
+// 3. Base styles
+// 4. Components
+// 5. Layout
+//
+
+// ========================================
+// 1. Bootstrap Framework - MUST come FIRST with @use
+// ========================================
+// Import Bootstrap with all our variable overrides applied.
+// The asterisk makes all Bootstrap modules available in this scope.
+// @use MUST be written before any other rules (including @import)
+@use 'bootstrap/scss/bootstrap' as *;
+
+// ========================================
+// 2. Abstracts (using @use for modern Sass)
+// ========================================
+@use 'abstracts/variables';
+@use 'abstracts/mixins' as m;
+
+// ========================================
+// 3. Base Styles
+// ========================================
+@import 'base/reset';
+@import 'base/typography';
+
+
+
+
+// ========================================
+// 4. Components
+// ========================================
+@import 'components/buttons';
+@import 'components/cards';
+@import 'components/libraries';
+
+// ========================================
+// 5. Layout
+// ========================================
+@import 'layout/header';
+@import 'layout/footer';

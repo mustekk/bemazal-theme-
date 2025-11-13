@@ -1,0 +1,74 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 2,
+  "name": "bemazal/one-v-one",
+  "title": "Bemazal: 1v1 Image + Card",
+  "category": "bemazal",
+  "icon": "align-wide",
+  "description": "Картинка слева и карточка справа с выбором размера изображения (Resolution), Aspect Ratio и Width/Height.",
+  "keywords": [
+    "bemazal",
+    "card",
+    "image",
+    "1v1"
+  ],
+  "supports": {
+    "html": false,
+    "align": [
+      "wide",
+      "full"
+    ]
+  },
+  "attributes": {
+    "mediaID": {
+      "type": "number"
+    },
+    "mediaAlt": {
+      "type": "string",
+      "default": ""
+    },
+    "mediaURL": {
+      "type": "string",
+      "default": ""
+    },
+    "mediaSize": {
+      "type": "string",
+      "default": "full"
+    },
+    "mediaSizes": {
+      "type": "object",
+      "default": {}
+    },
+    "aspectRatio": {
+      "type": "string",
+      "default": "original"
+    },
+    "imgWidth": {
+      "type": "string",
+      "default": ""
+    },
+    "imgHeight": {
+      "type": "string",
+      "default": ""
+    },
+    "title": {
+      "type": "string",
+      "default": ""
+    },
+    "text": {
+      "type": "string",
+      "default": ""
+    },
+    "buttonText": {
+      "type": "string",
+      "default": ""
+    },
+    "buttonUrl": {
+      "type": "string",
+      "default": ""
+    }
+  },
+  "editorScript": "file:./index.js",
+  "style": "file:./style.css",
+  "editorStyle": "file:./editor.css"
+}

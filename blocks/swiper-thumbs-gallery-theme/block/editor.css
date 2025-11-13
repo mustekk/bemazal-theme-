@@ -1,0 +1,99 @@
+/* Styles applied only within the Gutenberg editor. */
+.editor-styles-wrapper .tg-thumbs-gallery{outline:1px dashed rgba(0,0,0,.1);outline-offset:4px}
+.editor-styles-wrapper .tg-thumbs-gallery{max-width:var(--tg-max-w,700px);width:100%;}
+
+/* --- Custom admin gallery layout ---------------------------------------- */
+/*
+ * When editing the gallery in Gutenberg, display the list of selected images
+ * as a horizontal gallery rather than a tall vertical stack. Each thumbnail
+ * appears as a card with its own action buttons overlaid at the bottom.
+ */
+.editor-styles-wrapper .tg-thumbs-gallery--editor .tg-thumbs-gallery__toolbar{
+  margin-top:16px;
+}
+.editor-styles-wrapper .tg-thumbs-gallery--editor .tg-thumbs-gallery__list{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+.editor-styles-wrapper .tg-thumbs-gallery--editor .tg-thumbs-gallery__thumb-admin{
+  width:120px;
+  position:relative;
+  border:1px solid rgba(0,0,0,0.15);
+  border-radius:4px;
+  overflow:hidden;
+  box-shadow:0 1px 3px rgba(0,0,0,0.1);
+}
+.editor-styles-wrapper .tg-thumbs-gallery--editor .tg-thumbs-gallery__thumb-admin img{
+  display:block;
+  width:100%;
+  height:auto;
+}
+.editor-styles-wrapper .tg-thumbs-gallery--editor .tg-thumbs-gallery__thumb-admin .tg-thumbs-gallery__tools{
+  position:absolute;
+  bottom:0;
+  left:0;
+  right:0;
+  display:flex;
+  justify-content:space-between;
+  gap:2px;
+  padding:4px;
+  background:linear-gradient(to top, rgba(0,0,0,0.6), rgba(0,0,0,0));
+}
+.editor-styles-wrapper .tg-thumbs-gallery--editor .tg-thumbs-gallery__thumb-admin .tg-thumbs-gallery__tools button{
+  flex:1;
+  margin:0;
+  padding:0;
+  font-size:11px;
+}
+
+/* --- Custom admin thumb grid (matching user specification) ------------------- */
+.editor-styles-wrapper .tg-thumbs-gallery--editor .tg-thumbs-gallery__editorbar{
+  /* ensure spacing between thumbs and the replace button */
+  margin-top:16px;
+  display:flex;
+  flex-wrap:wrap;
+  align-items:flex-start;
+  gap:12px;
+}
+.editor-styles-wrapper .tg-thumbs-gallery--editor .tg-thumbs-gallery__thumbslist{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+.editor-styles-wrapper .tg-thumbs-gallery--editor .tg-admin-thumb{
+  position:relative;
+  width:50px;
+  height:50px;
+  border:1px solid rgba(0,0,0,0.15);
+  border-radius:4px;
+  overflow:hidden;
+  box-shadow:0 1px 3px rgba(0,0,0,0.1);
+}
+.editor-styles-wrapper .tg-thumbs-gallery--editor .tg-admin-thumb img{
+  width:100%;
+  height:100%;
+  display:block;
+  object-fit:cover;
+}
+.editor-styles-wrapper .tg-thumbs-gallery--editor .tg-admin-thumb .tg-admin-remove{
+  position:absolute;
+  top:0;
+  right:0;
+  width:16px;
+  height:16px;
+  line-height:16px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#fff;
+  background:rgba(0,0,0,0.6);
+  border-bottom-left-radius:3px;
+  cursor:pointer;
+  font-size:14px;
+  padding:0;
+  border:none;
+}
+.editor-styles-wrapper .tg-thumbs-gallery--editor .tg-admin-thumb .tg-admin-remove:hover{
+  background:rgba(255,0,0,0.75);
+}

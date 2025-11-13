@@ -1,0 +1,34 @@
+// ========================================
+// Third-Party Library Customizations
+// ========================================
+//
+// Custom styles for Swiper, Fancybox, Masonry, etc.
+//
+
+// Swiper
+.swiper {
+  margin-bottom: 2rem;
+}
+
+// Masonry grid helper classes
+.masonry-grid {
+  display: block;
+
+  &::after {
+    content: '';
+    display: block;
+    clear: both;
+  }
+}
+
+.masonry-item {
+  float: left;
+  margin-bottom: 1rem;
+}
+
+.masonry-sizer {
+  width: 33.333%;
+}
+
+// Fancybox customizations
+// Add any custom Fancybox styles here if needed

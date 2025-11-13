@@ -1,0 +1,164 @@
+// ====== дефолты ======
+$main-width: 720px !default;
+$main-height: 480px !default;
+$thumb-width: 120px !default;
+$thumb-height: 80px !default;
+$gap: 8px !default;
+$radius: 12px !default;
+$shadow: 0 1px 3px rgba(0,0,0,.07), 0 4px 12px rgba(0,0,0,.08);
+
+// ====== блок ======
+.tg-thumbs-gallery {
+  --tg-main-w: #{$main-width};
+  --tg-main-h: #{$main-height};
+  --tg-thumb-w: #{$thumb-width};
+  --tg-thumb-h: #{$thumb-height};
+  --tg-gap: #{$gap};
+  --tg-radius: #{$radius};
+
+  width: var(--tg-main-w);
+  margin: 0 auto;
+  box-sizing: content-box;
+
+  .swiper { overflow: hidden; border-radius: var(--tg-radius); }
+
+  &__main {
+    position: relative; // для оверлея иконок
+    width: var(--tg-main-w);
+    height: var(--tg-main-h);
+    box-shadow: $shadow;
+
+    .swiper-slide {
+      width: var(--tg-main-w) !important;
+      height: var(--tg-main-h);
+
+      .tg-thumbs-gallery__link,
+      img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        border-radius: inherit;
+      }
+
+      .tg-thumbs-gallery__link { cursor: zoom-in; }
+
+      img { object-fit: cover; }
+    }
+  }
+
+  &__thumbs {
+    width: var(--tg-main-w);
+    height: var(--tg-thumb-h);
+    margin-top: var(--tg-gap);
+
+    .swiper-wrapper { align-items: center; }
+
+    .swiper-slide {
+      width: var(--tg-thumb-w) !important;
+      height: var(--tg-thumb-h);
+      opacity: .6;
+      transition: opacity .2s ease, transform .2s ease, border-color .2s ease;
+      border: 2px solid transparent;
+      border-radius: calc(var(--tg-radius) / 2);
+      box-sizing: border-box;
+      cursor: pointer;
+
+      img {
+        display: block;
+        width: 100%; height: 100%;
+        object-fit: cover;
+        pointer-events: none; user-select: none;
+        border-radius: inherit;
+      }
+
+      &.swiper-slide-thumb-active {
+        opacity: 1;
+        transform: translateY(-1px);
+        border-color: rgba(0,0,0,.30);
+      }
+    }
+  }
+
+  &__btn {
+    position: absolute; top: 50%; z-index: 10;
+    width: 40px; height: 40px; margin-top: -20px;
+    border: 0; border-radius: 50%;
+    background: rgba(255,255,255,.9);
+    box-shadow: $shadow;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+
+    &::after { font-size: 18px; }
+    &.swiper-button-disabled { opacity: .35; cursor: default; }
+
+    &--prev { left: 8px; }
+    &--next { right: 8px; }
+  }
+
+  // ====== иконки по наведению ======
+  &__hoverbar{
+    position: absolute;
+    inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    gap: 10px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity .2s ease;
+  }
+  &__main:hover &__hoverbar { opacity: 1; }
+
+  .tg-hbtn{
+    pointer-events: auto;
+    width: 44px; height: 44px;
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,.65);
+    background: rgba(0,0,0,.55);
+    display: inline-flex; align-items: center; justify-content: center;
+    transition: transform .15s ease, background-color .15s ease, opacity .15s ease;
+    will-change: transform;
+    box-shadow: 0 2px 10px rgba(0,0,0,.25);
+  }
+  .tg-hbtn:hover{ transform: translateY(-1px) scale(1.03); }
+  .tg-hbtn:active{ transform: scale(.98); }
+
+  // SVG иконки как фон
+  .tg-hbtn::before{
+    content: ''; display: block; width: 20px; height: 20px;
+    background-repeat: no-repeat; background-position: center; background-size: 20px 20px;
+    filter: drop-shadow(0 1px 0 rgba(0,0,0,.25));
+  }
+  .tg-hbtn--zoom::before{
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z'/%3E%3C/svg%3E");
+  }
+  .tg-hbtn--fs::before{
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M7 14H5v5h5v-2H7v-3zm0-4h2V7h3V5H7v5zm10 9h-5v-2h3v-3h2v5zm-5-14h5v5h-2V7h-3V5z'/%3E%3C/svg%3E");
+  }
+
+  // ====== редакторские утилиты ======
+  &__editorbar { margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap; }
+  &__thumbslist { display: flex; gap: 8px; flex-wrap: wrap; }
+  &__thumbitem {
+    position: relative; width: 96px; height: 64px;
+    border: 1px solid rgba(0,0,0,.1); border-radius: 6px; overflow: hidden;
+    img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  }
+  &__thumbtools {
+    position: absolute; inset: auto 0 0 0;
+    display: flex; justify-content: space-between; gap: 2px;
+    background: linear-gradient(to top, rgba(0,0,0,.55), rgba(0,0,0,0));
+    padding: 4px;
+    button { font-size: 12px; line-height: 1; }
+  }
+
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+}
+/* === Responsive & perf overrides === */
+.tg-thumbs-gallery{ width:100%; max-width: var(--tg-max-w,700px); margin:0 auto; content-visibility:auto; contain-intrinsic-size:480px; }
+.tg-thumbs-gallery__main{ width:100%; height:auto; margin-bottom: var(--tg-gap, 8px); }
+.tg-thumbs-gallery__main .swiper-slide{ display:flex; align-items:center; justify-content:center; background:#000; }
+.tg-thumbs-gallery__main img{ max-width:100%; height:auto; display:block; }
+.tg-thumbs-gallery__thumbs{ width:100%; }
+.tg-thumbs-gallery__thumbs .swiper-slide{ width:auto; height:auto; opacity:.65; cursor:pointer; }
+.tg-thumbs-gallery__thumbs .swiper-slide-thumb-active{ opacity:1; }
+.tg-thumbs-gallery__thumbs img{ display:block; height:auto; }
+.editor-styles-wrapper .tg-thumbs-gallery a.tg-thumbs-gallery__link{ pointer-events:auto; }

@@ -1,0 +1,4 @@
+.editor-styles-wrapper .tg-fbmp__hover{display:none !important;opacity:0 !important}
+.editor-styles-wrapper .tg-fbmp__item{box-shadow:none !important}
+/* Prevent accidental nav */
+.editor-styles-wrapper .tg-fbmp__item{pointer-events:auto}

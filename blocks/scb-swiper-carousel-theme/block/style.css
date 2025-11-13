@@ -1,0 +1,94 @@
+
+/* Front-end styles for SCB Swiper Carousel */
+.scb-swiper-carousel{--scb-max-w:1200px; --scb-aspect:16/9; --scb-gap:16px;}
+.scb-swiper-carousel{max-width:var(--scb-max-w); margin-left:auto; margin-right:auto;}
+.scb-swiper-carousel .swiper{width:100%;}
+.scb-swiper-carousel .swiper-slide{position:relative; overflow:hidden; border-radius:12px;}
+.scb-swiper-carousel .scb-slide-inner{position:relative;}
+.scb-swiper-carousel img{display:block; width:100%; height:auto; aspect-ratio:var(--scb-aspect); object-fit:cover;}
+
+.scb-swiper-carousel .scb-overlay{
+  position:absolute; inset:0; pointer-events:none;
+  /* Apply a uniform darkening layer across the entire image based on the CSS variable.
+     When --scb-overlay is 0 there is no darkening; as it increases toward 1 the image
+     becomes progressively darker.  Use opacity on a solid background so that
+     browsers don't need to interpolate a CSS variable within rgba(). */
+  background-color:#000;
+  opacity:var(--scb-overlay,0);
+  transition:opacity .25s ease;
+}
+
+/* UI overlay container that holds the slide title and link.  This layer sits on top of
+   the image and darkening overlay.  It uses flexbox to space the title and
+   link button apart. */
+.scb-swiper-carousel .scb-ui{
+  position:absolute;
+  /* Fill the slide and center the UI both vertically and horizontally */
+  inset:0;
+  z-index:4;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  pointer-events:none;
+  text-align:center;
+}
+/* Title text inside the overlay.  It truncates with an ellipsis if the text
+   overflows its container. */
+.scb-swiper-carousel .scb-title{
+  /* Do not stretch the title; center it and allow wrapping if needed. */
+  flex:none;
+  max-width:100%;
+  color:#fff;
+  font-weight:600;
+  font-size:14px;
+  line-height:1.25;
+  text-shadow:0 1px 2px rgba(0,0,0,.55);
+  pointer-events:none;
+  text-align:center;
+}
+/* The link button.  It inherits pointer events so users can click it, unlike
+   the rest of the overlay. */
+.scb-swiper-carousel .scb-slide-link{
+  pointer-events:auto;
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+  padding:8px 12px;
+  border-radius:8px;
+  background:rgba(0,0,0,.45);
+  color:#fff;
+  font-size:13px;
+  line-height:1.2;
+  text-decoration:none;
+}
+.scb-swiper-carousel .scb-slide-link:hover{
+  background:rgba(0,0,0,.65);
+}
+/* The label inside the link.  Kept as a separate span for easy styling. */
+.scb-swiper-carousel .scb-link-label{
+  display:inline-block;
+}
+
+/* Hover effects */
+.scb-swiper-carousel .scb-hover-zoom img{transform:scale(1); transition:transform .35s ease;}
+.scb-swiper-carousel .scb-hover-zoom:hover img{transform:scale(1.05);}
+.scb-swiper-carousel .scb-hover-lift{transition:transform .3s ease, box-shadow .3s ease;}
+.scb-swiper-carousel .scb-hover-lift:hover{transform:translateY(-4px); box-shadow:0 10px 24px rgba(0,0,0,.18);}
+
+/* Navigation & pagination auto-hide tweaks */
+.scb-swiper-carousel .swiper-button-prev, 
+.scb-swiper-carousel .swiper-button-next{opacity:.85; transition:opacity .2s ease;}
+.scb-swiper-carousel:hover .swiper-button-prev, 
+.scb-swiper-carousel:hover .swiper-button-next{opacity:1;}
+
+.scb-swiper-carousel .swiper-pagination-bullet{background:rgba(255,255,255,.7);}
+.scb-swiper-carousel .swiper-pagination-bullet-active{background:#fff;}
+
+
+/* Global zoom toggle */
+.scb-swiper-carousel.scb-zoom-on .swiper-slide img{ transform:scale(1); transition:transform .35s ease; }
+.scb-swiper-carousel.scb-zoom-on .swiper-slide:hover img{ transform:scale(1.05); }
+.scb-swiper-carousel.scb-zoom-on .swiper-slide{ transition: box-shadow .3s ease; }
+.scb-swiper-carousel.scb-zoom-on .swiper-slide:hover{ box-shadow:0 10px 24px rgba(0,0,0,.18); }

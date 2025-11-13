@@ -1,0 +1,24 @@
+{
+  "name": "bemazal-theme",
+  "version": "1.0.0",
+  "description": "A modern WordPress theme using Vite, SCSS and a curated set of JS libraries.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "stop": "pkill -f vite || echo 'No Vite processes found'"
+  },
+  "devDependencies": {
+    "vite": "^6.0.0",
+    "vite-plugin-live-reload": "^3.0.5",
+    "vite-plugin-purgecss": "^0.2.13",
+    "sass": "^1.81.0",
+    "autoprefixer": "^10.4.20"
+  },
+  "dependencies": {
+    "bootstrap": "^5.3.3",
+    "swiper": "^11.1.14",
+    "@fancyapps/ui": "^5.0.36",
+    "masonry-layout": "^4.2.2"
+  }
+}
