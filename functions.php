@@ -28,54 +28,6 @@ if ( ! defined( 'BEMAZAL_VERSION' ) ) {
  */
 require_once get_template_directory() . '/includes/libraries-loader.php';
 
-/**
- * ПОСТОЯННОЕ ИСПРАВЛЕНИЕ: Убираем все ошибки редактора WordPress
- */
-function bemazal_permanent_editor_fix() {
-    if ( is_admin() ) {
-        // Загружаем скрипт исправления в самом начале
-        wp_enqueue_script(
-            'wp-editor-fix',
-            get_template_directory_uri() . '/assets/js/wp-editor-fix.js',
-            array(),
-            '1.0.0',
-            false // В header, не в footer
-        );
-
-        // Добавляем inline скрипт для немедленного исправления
-        $inline_script = "
-            window.external_wp_viewport_namespaceObject = window.external_wp_viewport_namespaceObject || {
-                store: {
-                    getState: function() {
-                        return { isViewportMatch: function() { return true; } };
-                    },
-                    subscribe: function() {},
-                    dispatch: function() {}
-                }
-            };
-            window.wp = window.wp || {};
-            window.wp.viewport = window.external_wp_viewport_namespaceObject;
-        ";
-        wp_add_inline_script( 'wp-editor-fix', $inline_script, 'before' );
-    }
-}
-add_action( 'admin_enqueue_scripts', 'bemazal_permanent_editor_fix', 1 );
-add_action( 'admin_init', 'bemazal_permanent_editor_fix', 1 );
-add_action( 'admin_head', function() {
-    ?>
-    <script>
-    // Немедленное исправление в head
-    window.external_wp_viewport_namespaceObject = window.external_wp_viewport_namespaceObject || {
-        store: {
-            getState: function() { return { isViewportMatch: function() { return true; } }; },
-            subscribe: function() {},
-            dispatch: function() {}
-        }
-    };
-    </script>
-    <?php
-}, 1 );
-
 
 /**
  * Load Bootstrap 5.3 Navwalker for multi-level dropdown menus.
