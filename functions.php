@@ -91,6 +91,10 @@ function bemazal_get_vite_server() {
  * nothing will be enqueued.
  */
 function bemazal_enqueue_assets() {
+    // Skip frontend assets in admin area to prevent conflicts with Gutenberg editor
+    if ( is_admin() ) {
+        return;
+    }
     $theme_uri      = get_template_directory_uri();
     $theme_dir      = get_template_directory();
     $dist_path      = $theme_dir . '/dist';
@@ -145,6 +149,11 @@ add_action( 'wp_enqueue_scripts', 'bemazal_enqueue_assets' );
  * @return string Modified script tag.
  */
 function bemazal_add_type_module( $tag, $handle, $src ) {
+    // Skip in admin area to prevent conflicts
+    if ( is_admin() ) {
+        return $tag;
+    }
+
     // Only in dev mode
     if ( ! bemazal_is_dev() ) {
         return $tag;
