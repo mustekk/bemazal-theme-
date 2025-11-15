@@ -1,0 +1,524 @@
+/**
+ * Video Hero Block Styles
+ *
+ * This file is loaded conditionally when the block is present on the page.
+ * Responsive video background with text overlay and optional Swiper slider.
+ */
+
+@use 'sass:math';
+
+// Import Bootstrap utilities (functions, variables, mixins) without full styles
+@use '../../abstracts/bootstrap-utils' as *;
+
+// Import shared block utilities
+@use '../shared' as *;
+
+// WordPress block wrapper - нужно для корректной работы alignfull
+.wp-block-bemazal-video-hero {
+  // Full Width alignment - breakout of container to full viewport width
+  &.alignfull {
+    width: 100vw !important;
+    max-width: 100vw !important;
+    margin-left: calc(50% - 50vw) !important;
+    margin-right: calc(50% - 50vw) !important;
+    left: 0;
+    right: 0;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  // Wide alignment - wider than content but not full viewport
+  &.alignwide {
+    width: 100%;
+    max-width: 1400px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+// Video Hero Block
+.video-hero-block {
+  position: relative;
+  width: 100%;
+  min-height: var(--video-hero-min-height, 600px);
+  overflow: hidden;
+
+  // Full Width alignment - также применяем к самому блоку
+  &.alignfull {
+    width: 100vw;
+    max-width: 100vw;
+    margin-left: calc(50% - 50vw);
+    margin-right: calc(50% - 50vw);
+  }
+
+  // Wide alignment - wider than content but not full viewport
+  &.alignwide {
+    width: 100%;
+    max-width: 1400px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  // Container for swiper or single video
+  .video-hero-swiper,
+  .video-hero-single {
+    width: 100%;
+    height: 100%;
+    min-height: var(--video-hero-min-height, 600px);
+  }
+
+  // Swiper wrapper
+  .swiper-wrapper {
+    height: 100%;
+  }
+
+  // Individual slide
+  .swiper-slide,
+  .video-hero-slide {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    min-height: var(--video-hero-min-height, 600px);
+    display: flex;
+    align-items: center; // Всегда центрируем по вертикали
+    justify-content: center; // Всегда центрируем по горизонтали
+  }
+
+  // Video container
+  .video-hero-video-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+
+
+
+
+  // Video element
+  .video-hero-video {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    transform: translate(-50%, -50%);
+    object-fit: cover;
+    z-index: 1;
+
+    // Smooth transition when switching sources
+    transition: opacity 0.3s ease;
+  }
+
+  // Iframe element (YouTube, Vimeo)
+  .video-hero-iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+    z-index: 1;
+
+    // Ensure iframe covers the container properly
+    // For YouTube and Vimeo, we use a different approach than video
+    // to maintain aspect ratio while filling the container
+    @supports (aspect-ratio: 16 / 9) {
+      aspect-ratio: 16 / 9;
+      min-width: 100%;
+      min-height: 100%;
+
+      // If container is wider than 16:9, scale to width
+      @media (min-aspect-ratio: 16/9) {
+        width: 100%;
+        height: calc(100vw * 9 / 16);
+        min-height: 100%;
+      }
+
+      // If container is taller than 16:9, scale to height
+      @media (max-aspect-ratio: 16/9) {
+        height: 100%;
+        width: calc(100vh * 16 / 9);
+        min-width: 100%;
+      }
+    }
+
+    // Center the iframe
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  // Dark overlay on video
+  .video-hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba($black, var(--video-hero-overlay, 0.3));
+    z-index: 2;
+    pointer-events: none;
+  }
+
+
+  // Content container
+  .video-hero-content {
+    position: relative;
+    z-index: 3;
+    padding: 2rem 1.5rem;
+    max-width: 900px;
+    width: 100%;
+    text-align: center;
+    color: var(--video-hero-text-color, $white);
+
+    // Красивая анимация появления
+    animation: fadeInUp 0.8s ease-out;
+
+    @include media-breakpoint-up(md) {
+      padding: 3rem 2rem;
+    }
+
+    @include media-breakpoint-up(lg) {
+      padding: 4rem 2.5rem;
+    }
+  }
+
+  // Heading - крупный и выразительный
+  .video-hero-heading {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 800;
+    margin: 0 0 1.5rem 0;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    text-shadow:
+      0 2px 10px rgba($black, 0.3),
+      0 4px 20px rgba($black, 0.2);
+
+    // Градиентный эффект для текста (опционально)
+    background: linear-gradient(135deg, $white 0%, rgba($white, 0.9) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+
+    @include media-breakpoint-up(md) {
+      margin-bottom: 2rem;
+    }
+  }
+
+  // Text - читаемый и стильный
+  .video-hero-text {
+    font-size: clamp(1rem, 2vw, 1.375rem);
+    line-height: 1.7;
+    margin: 0 0 2rem 0;
+    font-weight: 400;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+    opacity: 0.95;
+    text-shadow:
+      0 1px 3px rgba($black, 0.4),
+      0 2px 8px rgba($black, 0.2);
+
+    @include media-breakpoint-up(md) {
+      margin-bottom: 2.5rem;
+    }
+  }
+
+  // Button - современный и привлекательный
+  .video-hero-button {
+    display: inline-block;
+    padding: 1rem 2.5rem;
+    font-size: 1.125rem;
+    font-weight: 600;
+    text-decoration: none;
+    color: $white;
+    background: linear-gradient(135deg, rgba($white, 0.25) 0%, rgba($white, 0.15) 100%);
+    border: 2px solid rgba($white, 0.8);
+    border-radius: 50px; // Скругленная кнопка
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    backdrop-filter: blur(10px);
+    text-shadow: 0 1px 2px rgba($black, 0.3);
+    position: relative;
+    overflow: hidden;
+
+    // Эффект свечения
+    box-shadow:
+      0 4px 15px rgba($black, 0.2),
+      0 0 0 0 rgba($white, 0.4);
+
+    // Эффект при наведении
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba($white, 0.3) 0%, rgba($white, 0.1) 100%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    &:hover {
+      background: linear-gradient(135deg, rgba($white, 0.35) 0%, rgba($white, 0.25) 100%);
+      border-color: $white;
+      transform: translateY(-3px);
+      box-shadow:
+        0 8px 25px rgba($black, 0.3),
+        0 0 0 8px rgba($white, 0.1);
+      color: $white;
+
+      &::before {
+        opacity: 1;
+      }
+    }
+
+    &:active {
+      transform: translateY(-1px);
+      box-shadow:
+        0 4px 15px rgba($black, 0.2),
+        0 0 0 4px rgba($white, 0.1);
+    }
+
+    @include media-breakpoint-up(md) {
+      padding: 1.25rem 3rem;
+      font-size: 1.25rem;
+    }
+  }
+
+  // Swiper navigation buttons
+  .swiper-button-prev,
+  .swiper-button-next {
+    color: $white;
+    background: rgba($black, 0.3);
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+
+    &::after {
+      font-size: 1.25rem;
+    }
+
+    &:hover {
+      background: rgba($black, 0.5);
+    }
+
+    @include media-breakpoint-down(md) {
+      width: 40px;
+      height: 40px;
+
+      &::after {
+        font-size: 1rem;
+      }
+    }
+  }
+
+  // Swiper pagination
+  .swiper-pagination {
+    bottom: 1.25rem !important;
+
+    .swiper-pagination-bullet {
+      width: 12px;
+      height: 12px;
+      background: $white;
+      opacity: 0.5;
+      transition: all 0.3s ease;
+
+      &-active {
+        opacity: 1;
+        background: $white;
+      }
+    }
+  }
+
+  // Sound control button
+  .video-hero-sound-button {
+    position: absolute;
+    top: 2rem;
+    right: 2rem;
+    z-index: 10;
+    width: 50px;
+    height: 50px;
+    border: 2px solid rgba($white, 0.8);
+    border-radius: 50%;
+    background: rgba($black, 0.3);
+    backdrop-filter: blur(10px);
+    color: $white;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+
+    &:hover {
+      background: rgba($black, 0.5);
+      border-color: $white;
+      transform: scale(1.1);
+    }
+
+    svg {
+      width: 24px;
+      height: 24px;
+      transition: all 0.3s ease;
+    }
+
+    .sound-icon {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+
+      &.sound-off {
+        opacity: 0;
+        visibility: hidden;
+      }
+
+      &.sound-on {
+        opacity: 1;
+        visibility: visible;
+      }
+    }
+
+    &.muted {
+      .sound-off {
+        opacity: 1;
+        visibility: visible;
+      }
+
+      .sound-on {
+        opacity: 0;
+        visibility: hidden;
+      }
+    }
+
+    @include media-breakpoint-down(md) {
+      top: 1rem;
+      right: 1rem;
+      width: 40px;
+      height: 40px;
+
+      svg {
+        width: 20px;
+        height: 20px;
+      }
+    }
+  }
+
+  // Scroll down button
+  .video-hero-scroll-button {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    width: 50px;
+    height: 50px;
+    border: 2px solid rgba($white, 0.8);
+    border-radius: 50%;
+    background: rgba($black, 0.3);
+    backdrop-filter: blur(10px);
+    color: $white;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    animation: scrollBounce 2s infinite;
+
+    &:hover {
+      background: rgba($black, 0.5);
+      border-color: $white;
+      animation: none;
+    }
+
+    svg {
+      width: 24px;
+      height: 24px;
+    }
+
+    @include media-breakpoint-down(md) {
+      bottom: 1.5rem;
+      width: 40px;
+      height: 40px;
+
+      svg {
+        width: 20px;
+        height: 20px;
+      }
+    }
+  }
+
+  // Content alignment - всегда центрируется
+  // Удалены вариации выравнивания, так как контент всегда должен быть по центру
+
+  // Mobile optimizations
+  @include media-breakpoint-down(md) {
+    min-height: 400px;
+
+    .video-hero-swiper,
+    .video-hero-single,
+    .swiper-slide,
+    .video-hero-slide {
+      min-height: 400px;
+    }
+  }
+
+  // RTL support
+  @include rtl-support;
+}
+
+// Loading state for video
+.video-hero-video[data-loading="true"] {
+  opacity: 0.5;
+}
+
+// Анимация появления контента
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Анимация прыжка для кнопки прокрутки
+@keyframes scrollBounce {
+  0%, 100% {
+    transform: translate(-50%, 0);
+  }
+  50% {
+    transform: translate(-50%, 10px);
+  }
+}
+
+// Ensure video plays smoothly on mobile
+@media (prefers-reduced-motion: reduce) {
+  .video-hero-block {
+    .video-hero-video {
+      animation: none !important;
+    }
+
+    .swiper-slide {
+      transition-duration: 0s !important;
+    }
+
+    .video-hero-content {
+      animation: none !important;
+    }
+  }
+}

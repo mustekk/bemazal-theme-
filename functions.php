@@ -21,6 +21,68 @@ if ( ! defined( 'BEMAZAL_VERSION' ) ) {
 
 
 /**
+ * Load centralized libraries loader.
+ *
+ * This provides functions to load Swiper, Fancybox, and Masonry libraries
+ * from a single optimized source, compiled by Vite.
+ */
+require_once get_template_directory() . '/includes/libraries-loader.php';
+
+/**
+ * ПОСТОЯННОЕ ИСПРАВЛЕНИЕ: Убираем все ошибки редактора WordPress
+ */
+function bemazal_permanent_editor_fix() {
+    if ( is_admin() ) {
+        // Загружаем скрипт исправления в самом начале
+        wp_enqueue_script(
+            'wp-editor-fix',
+            get_template_directory_uri() . '/assets/js/wp-editor-fix.js',
+            array(),
+            '1.0.0',
+            false // В header, не в footer
+        );
+
+        // Добавляем inline скрипт для немедленного исправления
+        $inline_script = "
+            window.external_wp_viewport_namespaceObject = window.external_wp_viewport_namespaceObject || {
+                store: {
+                    getState: function() {
+                        return { isViewportMatch: function() { return true; } };
+                    },
+                    subscribe: function() {},
+                    dispatch: function() {}
+                }
+            };
+            window.wp = window.wp || {};
+            window.wp.viewport = window.external_wp_viewport_namespaceObject;
+        ";
+        wp_add_inline_script( 'wp-editor-fix', $inline_script, 'before' );
+    }
+}
+add_action( 'admin_enqueue_scripts', 'bemazal_permanent_editor_fix', 1 );
+add_action( 'admin_init', 'bemazal_permanent_editor_fix', 1 );
+add_action( 'admin_head', function() {
+    ?>
+    <script>
+    // Немедленное исправление в head
+    window.external_wp_viewport_namespaceObject = window.external_wp_viewport_namespaceObject || {
+        store: {
+            getState: function() { return { isViewportMatch: function() { return true; } }; },
+            subscribe: function() {},
+            dispatch: function() {}
+        }
+    };
+    </script>
+    <?php
+}, 1 );
+
+
+/**
+ * Load Bootstrap 5.3 Navwalker for multi-level dropdown menus.
+ */
+require_once get_template_directory() . '/inc/class-wp-bootstrap-5-3-navwalker.php';
+
+/**
  * Register theme supports and navigation menus.
  */
 function bemazal_setup() {
@@ -29,6 +91,9 @@ function bemazal_setup() {
 
     // Enable featured images on posts and pages.
     add_theme_support( 'post-thumbnails' );
+
+    // Enable wide and full alignment options in Gutenberg
+    add_theme_support( 'align-wide' );
 
     // Register a primary navigation location.
     register_nav_menus( [
@@ -52,14 +117,17 @@ function bemazal_is_dev() {
 /**
  * Get the URL of the Vite dev server.
  *
+ * Vite сервер проксируется через Nginx:
+ * https://bemazal.local/@vite/ → http://127.0.0.1:5173/
+ *
  * @return string
  */
 function bemazal_get_vite_server() {
     if ( defined( 'VITE_SERVER' ) && VITE_SERVER ) {
         return rtrim( VITE_SERVER, '/' );
     }
-    // Default to bemazal.local with HTTPS if not defined.
-    return 'https://bemazal.local:5173';
+    // Default: Vite через Nginx proxy (без порта :5173)
+    return 'https://bemazal.local';
 }
 
 /**
@@ -125,8 +193,26 @@ add_action( 'wp_enqueue_scripts', 'bemazal_enqueue_assets' );
  * @return string Modified script tag.
  */
 function bemazal_add_type_module( $tag, $handle, $src ) {
+    // Only in dev mode
+    if ( ! bemazal_is_dev() ) {
+        return $tag;
+    }
+
+    // Only for scripts from Vite dev server
+    $vite_server = bemazal_get_vite_server();
+    if ( strpos( $src, $vite_server ) === false ) {
+        return $tag;
+    }
+
     // Add type="module" to Vite-related scripts
-    if ( in_array( $handle, [ 'vite-client', 'bemazal-main' ], true ) ) {
+    $module_handles = [ 'vite-client', 'bemazal-main', 'bemazal-swiper', 'bemazal-fancybox', 'bemazal-masonry' ];
+
+    // Also add type="module" to block view scripts from Vite dev server
+    if ( strpos( $handle, '-view' ) !== false ) {
+        $module_handles[] = $handle;
+    }
+
+    if ( in_array( $handle, $module_handles, true ) ) {
         // Remove existing type attribute and add type="module"
         $tag = preg_replace( '/\stype=["\'][^"\']*["\']/', '', $tag );
         $tag = str_replace( '<script ', '<script type="module" ', $tag );
@@ -151,3 +237,11 @@ add_action( 'send_headers', 'bemazal_nocache_headers' );
  * Disable the admin bar on the front end for a cleaner look when developing.
  */
 add_filter( 'show_admin_bar', '__return_false' );
+
+/**
+ * Load Gutenberg blocks auto-loader.
+ *
+ * This file automatically scans the gutenberg-blocks directory and registers all blocks
+ * found in category folders (gallery, slider, content, etc.).
+ */
+require_once get_template_directory() . '/gutenberg-blocks/blocks-loader.php';

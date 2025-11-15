@@ -10,6 +10,16 @@
 get_header();
 ?>
 
+
+
+
+
+
+
+
+
+
+
 <main class="site-main container py-5">
     <h1 class="mb-5">Bemazal Theme Demo</h1>
 

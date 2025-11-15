@@ -1,0 +1,101 @@
+/**
+ * Fancybox Masonry Gallery Block Styles
+ *
+ * This file is loaded conditionally when the block is present on the page.
+ */
+
+@use 'sass:math';
+
+// Import Bootstrap for variables and mixins
+@use 'bootstrap/scss/bootstrap' as *;
+
+// Import shared block utilities
+@use '../shared' as *;
+
+// Block wrapper
+.wp-block-tg-fbmp-gallery {
+  @include block-spacing(2rem, 2rem);
+
+  // Gallery grid (CSS Grid fallback when not using Masonry)
+  .fbmp-gallery-grid {
+    display: grid;
+    gap: var(--gap, 12px);
+    grid-template-columns: repeat(var(--columns-mobile, 1), 1fr);
+
+    @include media-breakpoint-up(md) {
+      grid-template-columns: repeat(var(--columns-tablet, 2), 1fr);
+    }
+
+    @include media-breakpoint-up(lg) {
+      grid-template-columns: repeat(var(--columns-desktop, 3), 1fr);
+    }
+  }
+
+  // Gallery item
+  .fbmp-gallery-item {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--border-radius, 0);
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+    &:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba($black, 0.15);
+
+      img {
+        transform: scale(1.05);
+      }
+    }
+
+    img {
+      @include responsive-image;
+      transition: transform 0.3s ease;
+      object-fit: cover;
+      width: 100%;
+      height: auto;
+    }
+
+    // Caption overlay
+    figcaption {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 1rem;
+      background: linear-gradient(to top, rgba($black, 0.8), transparent);
+      color: $white;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+
+    &:hover figcaption {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  // Masonry mode specific
+  &.masonry-enabled {
+    .fbmp-gallery-grid {
+      display: block;
+    }
+
+    .fbmp-gallery-item {
+      float: left;
+      // Masonry.js handles positioning
+    }
+  }
+
+  // Loading state
+  &.is-loading {
+    .fbmp-gallery-item {
+      opacity: 0;
+      animation: fadeIn 0.5s ease forwards;
+    }
+  }
+
+  // RTL support
+  @include rtl-support;
+}

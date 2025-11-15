@@ -5,6 +5,10 @@
 // Additional resets and base styles that complement Bootstrap.
 //
 
+
+
+
+
 *,
 *::before,
 *::after {
@@ -31,6 +35,12 @@ p, figure, blockquote, dl, dd {
 // Smooth scrolling
 html {
   scroll-behavior: smooth;
+}
+
+// Предотвращаем горизонтальный скролл от alignfull блоков
+html,
+body {
+  overflow-x: hidden;
 }
 
 // Improve form controls

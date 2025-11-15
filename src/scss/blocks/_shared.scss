@@ -1,0 +1,58 @@
+/**
+ * Shared Blocks Styles
+ *
+ * Common styles, variables, and mixins used across multiple blocks.
+ * This file has access to all Bootstrap variables and mixins.
+ */
+
+// Block wrapper base styles
+.wp-block {
+  // Common block spacing
+  margin-bottom: 2rem;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+// Shared block animations
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Responsive image helper
+@mixin responsive-image {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+// Block spacing mixin
+@mixin block-spacing($top: 2rem, $bottom: 2rem) {
+  margin-top: $top;
+  margin-bottom: $bottom;
+}
+
+// RTL support mixin
+@mixin rtl-support {
+  .rtl & {
+    direction: rtl;
+    text-align: right;
+  }
+}

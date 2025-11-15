@@ -1,0 +1,128 @@
+/**
+ * Image + Card Block Styles
+ *
+ * This file is loaded conditionally when the block is present on the page.
+ */
+
+@use 'sass:math';
+@use 'sass:color';
+
+// Import Bootstrap for variables and mixins
+@use 'bootstrap/scss/bootstrap' as *;
+
+// Import shared block utilities
+@use '../shared' as *;
+
+// Block wrapper
+.wp-block-bemazal-one-v-one {
+  @include block-spacing(3rem, 3rem);
+
+  .bemazal-1v1-container {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    align-items: center;
+
+    @include media-breakpoint-up(md) {
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+    }
+  }
+
+  // Image section
+  .bemazal-1v1-image {
+    position: relative;
+    overflow: hidden;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba($black, 0.1);
+
+    img {
+      @include responsive-image;
+      width: 100%;
+      height: auto;
+      transition: transform 0.5s ease;
+    }
+
+    &:hover img {
+      transform: scale(1.05);
+    }
+  }
+
+  // Card section
+  .bemazal-1v1-card {
+    padding: 2rem;
+    background-color: $white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba($black, 0.08);
+
+    @include media-breakpoint-up(md) {
+      padding: 3rem;
+    }
+
+    .card-title {
+      font-size: 2rem;
+      font-weight: 700;
+      color: $gray-900;
+      margin-bottom: 1rem;
+      line-height: 1.2;
+
+      @include media-breakpoint-up(md) {
+        font-size: 2.5rem;
+      }
+    }
+
+    .card-text {
+      font-size: 1.125rem;
+      color: $gray-700;
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+    }
+
+    .card-button {
+      display: inline-block;
+      padding: 0.75rem 2rem;
+      background-color: $primary;
+      color: $white;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 8px rgba($primary, 0.3);
+
+      &:hover {
+        background-color: color.adjust($primary, $lightness: -10%);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba($primary, 0.4);
+        color: $white;
+      }
+
+      &:active {
+        transform: translateY(0);
+      }
+    }
+  }
+
+  // RTL layout
+  .rtl & {
+    .bemazal-1v1-container {
+      direction: rtl;
+    }
+
+    .bemazal-1v1-card {
+      text-align: right;
+    }
+  }
+
+  // Mobile adjustments
+  @include media-breakpoint-down(md) {
+    .bemazal-1v1-card {
+      .card-title {
+        font-size: 1.75rem;
+      }
+
+      .card-text {
+        font-size: 1rem;
+      }
+    }
+  }
+}

@@ -32,13 +32,16 @@
 @use 'abstracts/variables';
 @use 'abstracts/mixins' as m;
 
+
+
+
 // ========================================
 // 3. Base Styles
 // ========================================
+// Note: Using @import here because these files use Bootstrap variables
+// @forward doesn't make variables available in the imported files
 @import 'base/reset';
 @import 'base/typography';
-
-
 
 
 // ========================================
@@ -46,6 +49,7 @@
 // ========================================
 @import 'components/buttons';
 @import 'components/cards';
+@import 'components/navigation';
 @import 'components/libraries';
 
 // ========================================
@@ -53,3 +57,45 @@
 // ========================================
 @import 'layout/header';
 @import 'layout/footer';
+
+// ========================================
+// 6. Gutenberg Blocks - Base Styles
+// ========================================
+// Critical/base block styles loaded on all pages.
+// Heavy block-specific styles are loaded conditionally via PHP.
+@import 'blocks/index';
+
+// ========================================
+// 7. WordPress Alignments Support
+// ========================================
+// Поддержка выравнивания блоков WordPress (alignfull, alignwide)
+// Эти стили позволяют блокам выходить за пределы контейнеров
+
+// Для блоков с alignfull - растягиваем на всю ширину экрана
+// Используем calc(50% - 50vw) для выхода из контейнера
+// overflow-x: hidden на body предотвращает горизонтальный скролл
+.alignfull {
+  width: 100vw;
+  max-width: 100vw;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+  padding-left: 0;
+  padding-right: 0;
+  // Убираем возможность создания горизонтального скролла
+  position: relative;
+}
+
+// Для блоков с alignwide - делаем шире контейнера, но не на всю ширину
+.alignwide {
+  width: 100%;
+  max-width: 1400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+
+
+
+
+
+

@@ -30,8 +30,49 @@ export default defineConfig(({ command, mode }) => {
             rollupOptions: {
                 input: {
                     main: path.resolve(themeRoot, 'src/js/main.js'),
+                    // Separate entry points for libraries (loaded on-demand by blocks)
+                    'libraries-swiper': path.resolve(themeRoot, 'src/js/libraries/swiper.js'),
+                    'libraries-fancybox': path.resolve(themeRoot, 'src/js/libraries/fancybox.js'),
+                    'libraries-masonry': path.resolve(themeRoot, 'src/js/libraries/masonry.js'),
+                    // Separate entry points for block styles (loaded on-demand)
+                    'block-thumbs-gallery': path.resolve(themeRoot, 'src/scss/blocks/gallery/thumbs-gallery.scss'),
+                    'block-masonry-gallery': path.resolve(themeRoot, 'src/scss/blocks/gallery/masonry-gallery.scss'),
+                    'block-carousel': path.resolve(themeRoot, 'src/scss/blocks/slider/carousel.scss'),
+                    'block-image-card': path.resolve(themeRoot, 'src/scss/blocks/content/image-card.scss'),
+                    'block-video-hero': path.resolve(themeRoot, 'src/scss/blocks/media/video-hero.scss'),
+                },
+                output: {
+                    // Optimize chunk splitting for better caching
+                    manualChunks: (id) => {
+                        // Vendor chunk for npm packages
+                        if (id.includes('node_modules')) {
+                            // Split large libraries into separate chunks
+                            if (id.includes('swiper')) return 'vendor-swiper';
+                            if (id.includes('@fancyapps')) return 'vendor-fancybox';
+                            if (id.includes('masonry-layout')) return 'vendor-masonry';
+                            if (id.includes('imagesloaded')) return 'vendor-imagesloaded';
+                            if (id.includes('bootstrap')) return 'vendor-bootstrap';
+                            // Other npm packages
+                            return 'vendor';
+                        }
+                    },
+                    // Clean filenames for better debugging
+                    chunkFileNames: 'chunks/[name]-[hash].js',
+                    entryFileNames: '[name]-[hash].js',
+                    assetFileNames: 'assets/[name]-[hash].[ext]',
                 },
             },
+            // Optimize build performance
+            minify: 'terser',
+            terserOptions: {
+                compress: {
+                    drop_console: isProduction, // Remove console.log in production
+                    drop_debugger: isProduction,
+                    pure_funcs: isProduction ? ['console.log', 'console.info'] : [],
+                },
+            },
+            // Increase chunk size warning limit (libraries are large)
+            chunkSizeWarningLimit: 600,
         },
 
         plugins: [
@@ -46,6 +87,7 @@ export default defineConfig(({ command, mode }) => {
                 content: [
                     path.resolve(themeRoot, '**/*.php'),
                     path.resolve(themeRoot, 'src/js/**/*.js'),
+                    path.resolve(themeRoot, 'gutenberg-blocks/**/*.js'),
                 ],
                 safelist: [
                     // классы библиотек, которые не должны удаляться
@@ -54,6 +96,10 @@ export default defineConfig(({ command, mode }) => {
                     /^is-/,
                     /^wp-/,
                     /^masonry-/,
+                    /^video-hero-/,
+                    /^bemazal-/,
+                    // WordPress alignment classes
+                    /^align/,
                 ],
             }),
         ],
@@ -61,6 +107,13 @@ export default defineConfig(({ command, mode }) => {
         css: {
             preprocessorOptions: {
                 scss: {
+                    // Используем modern API для лучшей производительности
+                    api: 'modern',
+                    quietDeps: true, // Suppress deprecation warnings from dependencies (Bootstrap)
+                    // Подавляем предупреждения об устаревших @import
+                    // Эти предупреждения не критичны - @import всё еще работает
+                    // и необходим для совместимости с Bootstrap
+                    silenceDeprecations: ['import'],
                     // если нужно подключать общие переменные/миксины глобально:
                     // additionalData: `@import "abstracts/variables"; @import "abstracts/mixins";`,
                 },
@@ -68,23 +121,28 @@ export default defineConfig(({ command, mode }) => {
         },
 
         server: {
-            origin: 'https://bemazal.local:5173',
+            // Nginx proxy setup: Vite работает на HTTP локально
+            // Nginx проксирует на https://bemazal.local/@vite/
+            origin: 'https://bemazal.local',
 
-            host: '0.0.0.0',
+            host: '127.0.0.1',
             port: 5173,
             strictPort: true,
 
-            // Enable CORS for WordPress domain
+            // CORS не нужен - всё через Nginx proxy
             cors: true,
 
-            https: {
-                key: fs.readFileSync(path.resolve(themeRoot, 'bemazal.local+3-key.pem')),
-                cert: fs.readFileSync(path.resolve(themeRoot, 'bemazal.local+3.pem')),
-            },
+            // Убрали HTTPS - работаем на обычном HTTP
+            // SSL обрабатывает Nginx
+            https: false,
 
             hmr: {
-                host: 'bemazal.local',
+                // HMR через Nginx WebSocket proxy
                 protocol: 'wss',
+                host: 'bemazal.local',
+                clientPort: 443,
+                path: '/@vite/',
+                overlay: true
             },
 
             // важно для WSL / Windows: включаем polling

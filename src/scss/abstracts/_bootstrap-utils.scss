@@ -1,0 +1,18 @@
+/**
+ * Bootstrap Utilities Wrapper
+ *
+ * This file provides access to Bootstrap utilities (functions, variables, mixins)
+ * for use in block-specific SCSS files, without including the full Bootstrap styles.
+ *
+ * Note: Using @import here is REQUIRED because Bootstrap's internal structure relies on global scope.
+ * The new Sass module system (@use/@forward) creates isolation that breaks Bootstrap's
+ * internal dependencies (e.g., variables.scss uses _assert-ascending from functions.scss).
+ * These deprecation warnings are safe to ignore for Bootstrap compatibility.
+ */
+
+// Import Bootstrap API modules in correct order
+// These imports only include utility functions, variables, and mixins - no actual CSS output
+@import 'bootstrap/scss/functions';
+@import 'bootstrap/scss/variables';
+@import 'bootstrap/scss/mixins';
+@import 'bootstrap/scss/maps';

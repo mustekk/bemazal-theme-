@@ -1,0 +1,110 @@
+.editor-styles-wrapper .tg-fbmp__hover{display:none !important;opacity:0 !important}
+.editor-styles-wrapper .tg-fbmp__item{box-shadow:none !important}
+/* Prevent accidental nav */
+.editor-styles-wrapper .tg-fbmp__item{pointer-events:auto}
+
+/* Drag & Drop на основных изображениях */
+.tg-fbmp__itemwrap {
+  position: relative;
+  cursor: move;
+  cursor: grab;
+  transition: all 0.3s ease;
+  border: 3px solid transparent;
+}
+
+.tg-fbmp__itemwrap:active {
+  cursor: grabbing;
+}
+
+.tg-fbmp__itemwrap.dragging {
+  opacity: 0.5;
+  transform: scale(0.95);
+  border-color: #2271b1;
+  box-shadow: 0 8px 16px rgba(34, 113, 177, 0.3);
+  z-index: 1000;
+}
+
+.tg-fbmp__itemwrap.drag-over-before {
+  border-left: 4px solid #2271b1;
+  box-shadow: -4px 0 8px rgba(34, 113, 177, 0.4);
+}
+
+.tg-fbmp__itemwrap.drag-over-after {
+  border-right: 4px solid #2271b1;
+  box-shadow: 4px 0 8px rgba(34, 113, 177, 0.4);
+}
+
+/* Панель управления на каждом изображении */
+.tg-fbmp__controls {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  z-index: 10;
+}
+
+.tg-fbmp__itemwrap:hover .tg-fbmp__controls {
+  opacity: 1;
+}
+
+.tg-fbmp__controls-inner {
+  display: flex;
+  gap: 4px;
+  background: rgba(0, 0, 0, 0.8);
+  padding: 6px;
+  border-radius: 6px;
+  backdrop-filter: blur(4px);
+}
+
+.tg-fbmp__controls-inner .components-button {
+  min-width: 32px;
+  height: 32px;
+  padding: 0;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.tg-fbmp__controls-inner .components-button:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.1);
+}
+
+.tg-fbmp__controls-inner .components-button:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.tg-fbmp__controls-inner .components-button.is-destructive {
+  background: rgba(220, 38, 38, 0.8);
+  border-color: rgba(220, 38, 38, 1);
+}
+
+.tg-fbmp__controls-inner .components-button.is-destructive:hover {
+  background: rgba(220, 38, 38, 1);
+}
+
+.tg-fbmp__btn-left,
+.tg-fbmp__btn-right {
+  font-weight: bold;
+}
+
+/* Toolbar внизу блока */
+.tg-fbmp__toolbar {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #ddd;
+  text-align: center;
+}
+
+.tg-fbmp__toolbar .components-button {
+  font-size: 14px;
+  padding: 8px 16px;
+}

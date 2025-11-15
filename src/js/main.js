@@ -10,6 +10,12 @@
 // Import SCSS (compiled to CSS by Vite)
 import '../scss/main.scss';
 
+// Import Navigation Enhancement (Desktop hover-based menu)
+import './navigation.js';
+
+// Import Mobile Menu (mmenu.js style)
+import './mobile-menu.js';
+
 // Import Swiper and required modules
 import Swiper from 'swiper';
 import { Navigation } from 'swiper/modules';

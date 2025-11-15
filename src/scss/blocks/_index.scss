@@ -1,0 +1,32 @@
+/**
+ * Blocks Index
+ *
+ * This file includes critical/base styles for all blocks that should be
+ * loaded on every page. Heavy/specific block styles are loaded conditionally.
+ *
+ * Import order:
+ * 1. Shared utilities
+ * 2. Critical block base styles (layout, structure)
+ */
+
+// Shared utilities and mixins
+@import 'shared';
+
+// Gallery blocks - base structure only
+// (Full styles loaded conditionally when block is present)
+
+// Slider blocks - base structure only
+
+// Content blocks - base structure only
+
+// Global block enhancements
+.wp-block {
+  &[class*="align"] {
+    // Alignment support
+    &.alignwide,
+    &.alignfull {
+      width: 100%;
+      max-width: 100%;
+    }
+  }
+}
