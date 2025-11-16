@@ -366,6 +366,447 @@ A demo page template (`page-demo.php`) is available to test all theme features:
 - **Improvement**: ~70% reduction in JS size
 - Load strategy: Conditional loading (only when blocks present)
 
+## Creating New Gutenberg Blocks: Complete Guide
+
+Это руководство объясняет **правильную архитектуру** создания блоков в теме Bemazal, включая двойную CSS-систему и интеграцию с HMR.
+
+### ⚠️ ВАЖНО: Двойная CSS Архитектура
+
+Тема использует **два места для хранения CSS** блоков:
+
+#### 1. Локальные файлы в `gutenberg-blocks/`
+```
+gutenberg-blocks/category/block-name/
+├── style.scss          # Исходник для фронтенда (НЕ используется в продакшене)
+├── style.css           # Заглушка (реальные стили берутся из main.css)
+├── editor.scss         # Исходник для редактора
+└── editor.css          # Скомпилированные стили редактора (используется)
+```
+
+**Назначение:**
+- `editor.scss/css` - Только для редактора WordPress (Gutenberg)
+- `style.scss/css` - Заглушки для WordPress-совместимости
+- Обеспечивают правильное распознавание WordPress
+
+#### 2. Централизованные файлы в `src/scss/blocks/`
+```
+src/scss/blocks/
+├── gallery/
+│   ├── thumbs-gallery.scss      # Продакшн стили блока
+│   └── masonry-gallery.scss
+├── slider/
+│   └── carousel.scss
+├── media/
+│   ├── image-hero.scss
+│   └── video-hero.scss
+└── _index.scss                  # КРИТИЧНО: импортирует все блоки
+```
+
+**Назначение:**
+- Единственный источник продакшн-стилей
+- Компилируются в `main.css` через Vite
+- Обеспечивают HMR в dev режиме
+- Оптимизируются PurgeCSS
+
+### 🔥 HMR (Hot Module Replacement) Интеграция
+
+**Критичное требование:** Все SCSS файлы блоков **ОБЯЗАТЕЛЬНО** должны быть импортированы в `src/scss/blocks/_index.scss`:
+
+```scss
+// src/scss/blocks/_index.scss
+
+// Gallery blocks
+@import 'gallery/thumbs-gallery';
+@import 'gallery/masonry-gallery';
+
+// Slider blocks
+@import 'slider/carousel';
+
+// Media blocks
+@import 'media/image-hero';
+@import 'media/video-hero';
+
+// Content blocks
+// @import 'content/your-new-block'; // Добавь здесь новый блок
+```
+
+**Почему это важно:**
+- ✅ HMR работает мгновенно при правке SCSS
+- ✅ Все стили собираются в один `main.css` (67KB → 11KB gzip)
+- ✅ Меньше HTTP запросов (1 вместо 6+)
+- ❌ Без импорта: HMR не работает, нужен ручной пересбор
+
+### 📁 Полная Структура Блока
+
+Пример правильной структуры блока:
+
+```
+gutenberg-blocks/category/block-name/
+├── block.json          # Метаданные блока (обязательно)
+├── index.js            # React компонент для редактора
+├── register.php        # PHP хуки и загрузка ассетов
+├── view.js             # JavaScript для фронтенда (опционально)
+│
+├── editor.scss         # Стили ТОЛЬКО для редактора (исходник)
+├── editor.css          # Скомпилированные стили редактора
+│
+├── style.scss          # Заглушка (не используется)
+└── style.css           # Заглушка (реальные стили в src/scss/blocks/)
+```
+
+**И параллельно:**
+```
+src/scss/blocks/category/
+└── block-name.scss     # Реальные продакшн стили
+```
+
+### 🚀 Пошаговое Создание Нового Блока
+
+#### Шаг 1: Создание директории блока
+```bash
+mkdir -p gutenberg-blocks/category/block-name
+```
+
+#### Шаг 2: Создание block.json
+```json
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "namespace/block-name",
+  "title": "Block Title",
+  "category": "media",
+  "icon": "smiley",
+  "description": "Block description",
+  "keywords": ["keyword1", "keyword2"],
+  "textdomain": "bemazal",
+  "editorScript": "file:./index.js",
+  "editorStyle": "file:./editor.css",
+  "style": "file:./style.css",
+  "viewScript": "file:./view.js",
+  "supports": {
+    "html": false,
+    "align": ["wide", "full"]
+  },
+  "attributes": {
+    "exampleAttribute": {
+      "type": "string",
+      "default": "Default value"
+    }
+  }
+}
+```
+
+#### Шаг 3: Создание register.php
+```php
+<?php
+/**
+ * Block Name - Assets Loader
+ *
+ * Block styles are bundled in main.css for HMR support.
+ * This file handles block-specific view script loading.
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
+
+add_action( 'wp_enqueue_scripts', function () {
+    // Skip in admin
+    if ( is_admin() ) {
+        return;
+    }
+
+    // Check if block is present on the page
+    if ( ! has_block( 'namespace/block-name' ) ) {
+        return;
+    }
+
+    $block_dir = get_stylesheet_directory() . '/gutenberg-blocks/category/block-name';
+    $block_url = get_stylesheet_directory_uri() . '/gutenberg-blocks/category/block-name';
+
+    // Enqueue block-specific initialization script
+    // Dependencies: centralized libraries if needed
+    $view_js = $block_dir . '/view.js';
+    if ( file_exists( $view_js ) ) {
+        wp_enqueue_script(
+            'block-name-view',
+            $block_url . '/view.js',
+            [ 'bemazal-swiper' ], // Зависимости от библиотек (опционально)
+            filemtime( $view_js ),
+            true
+        );
+    }
+}, 25 ); // Priority 25 - после загрузки библиотек
+```
+
+**ВАЖНО:** НЕ используй условную загрузку стилей через `bemazal_enqueue_block_style()` - стили уже в main.css!
+
+#### Шаг 4: Создание index.js
+```javascript
+import { registerBlockType } from '@wordpress/blocks';
+import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
+import { PanelBody, TextControl } from '@wordpress/components';
+
+registerBlockType('namespace/block-name', {
+    edit: ({ attributes, setAttributes }) => {
+        const blockProps = useBlockProps();
+
+        return (
+            <>
+                <InspectorControls>
+                    <PanelBody title="Block Settings">
+                        <TextControl
+                            label="Example Attribute"
+                            value={attributes.exampleAttribute}
+                            onChange={(value) => setAttributes({ exampleAttribute: value })}
+                        />
+                    </PanelBody>
+                </InspectorControls>
+                <div {...blockProps}>
+                    <p>Block content: {attributes.exampleAttribute}</p>
+                </div>
+            </>
+        );
+    },
+    save: ({ attributes }) => {
+        const blockProps = useBlockProps.save();
+        return (
+            <div {...blockProps}>
+                <p>{attributes.exampleAttribute}</p>
+            </div>
+        );
+    }
+});
+```
+
+#### Шаг 5: Создание editor.scss и editor.css
+```scss
+// gutenberg-blocks/category/block-name/editor.scss
+
+.wp-block-namespace-block-name {
+    // Стили только для редактора WordPress
+    padding: 20px;
+    border: 1px solid #e0e0e0;
+}
+```
+
+Скомпилируй в CSS:
+```bash
+sass gutenberg-blocks/category/block-name/editor.scss gutenberg-blocks/category/block-name/editor.css
+```
+
+#### Шаг 6: Создание заглушек style.scss и style.css
+```css
+/* gutenberg-blocks/category/block-name/style.css */
+/* Реальные стили блока находятся в src/scss/blocks/category/block-name.scss */
+/* и компилируются в main.css для поддержки HMR */
+```
+
+#### Шаг 7: Создание централизованного SCSS
+```scss
+// src/scss/blocks/category/block-name.scss
+
+.wp-block-namespace-block-name {
+    // Продакшн стили блока для фронтенда
+    padding: 30px;
+    background: #f9f9f9;
+
+    p {
+        margin: 0;
+    }
+}
+```
+
+#### Шаг 8: ⚡ КРИТИЧНО - Добавление импорта в _index.scss
+```scss
+// src/scss/blocks/_index.scss
+
+// ... существующие импорты ...
+
+// Category blocks
+@import 'category/block-name'; // ← ОБЯЗАТЕЛЬНО ДОБАВЬ!
+```
+
+**БЕЗ ЭТОГО HMR НЕ БУДЕТ РАБОТАТЬ!**
+
+#### Шаг 9: Создание view.js (если нужен JavaScript)
+```javascript
+// gutenberg-blocks/category/block-name/view.js
+
+document.addEventListener('DOMContentLoaded', () => {
+    const blocks = document.querySelectorAll('.wp-block-namespace-block-name');
+
+    blocks.forEach(block => {
+        // Инициализация блока
+        console.log('Block initialized:', block);
+
+        // Пример использования Swiper (если добавлена зависимость)
+        if (window.Swiper) {
+            const swiper = new window.Swiper(block.querySelector('.swiper'), {
+                // опции
+            });
+        }
+    });
+});
+```
+
+#### Шаг 10: (Опционально) Добавление в libraries-loader.php
+Если блок использует централизованные библиотеки (Swiper, Fancybox, Masonry):
+
+```php
+// includes/libraries-loader.php
+
+$block_library_map = [
+    'namespace/block-name' => [ 'swiper' ], // или 'fancybox', 'masonry'
+    // ... существующие блоки ...
+];
+```
+
+#### Шаг 11: Пересборка темы
+```bash
+npm run build
+```
+
+Блок автоматически зарегистрируется через `blocks-loader.php`!
+
+### ✅ Чеклист Создания Блока
+
+- [ ] Создана директория `gutenberg-blocks/category/block-name/`
+- [ ] Создан `block.json` с правильными метаданными
+- [ ] Создан `register.php` с условной загрузкой view.js
+- [ ] Создан `index.js` с React компонентом
+- [ ] Создан `editor.scss` и скомпилирован в `editor.css`
+- [ ] Созданы заглушки `style.scss` и `style.css`
+- [ ] Создан `src/scss/blocks/category/block-name.scss` с продакшн стилями
+- [ ] **КРИТИЧНО:** Добавлен импорт в `src/scss/blocks/_index.scss`
+- [ ] (Опционально) Создан `view.js` для фронтенд JavaScript
+- [ ] (Опционально) Добавлен маппинг в `includes/libraries-loader.php`
+- [ ] Запущен `npm run build`
+- [ ] Протестирован HMR: правка SCSS → мгновенное обновление в браузере
+
+### 📊 Архитектурные Решения
+
+#### Почему Двойная CSS Система?
+
+**Старая архитектура (до HMR):**
+- Отдельные entry points в vite.config.js для каждого блока
+- Каждый блок → отдельный CSS файл (block-carousel.css, block-gallery.css, и т.д.)
+- 6+ CSS файлов (6+ HTTP запросов)
+- HMR не работал для SCSS блоков
+- Условная загрузка через `bemazal_enqueue_block_style()`
+
+**Новая архитектура (с HMR):**
+- Все SCSS блоков импортируются в `src/scss/blocks/_index.scss`
+- Компилируется в один `main.css` (67KB → 11KB gzip)
+- 1 CSS файл (1 HTTP запрос)
+- ✅ HMR работает мгновенно
+- Локальные файлы остаются для WordPress-совместимости
+
+**Результаты:**
+- Размер CSS: уменьшен на 84% (с gzip)
+- HTTP запросы: 6+ → 1
+- Скорость разработки: HMR работает мгновенно
+- Производительность: меньше файлов = быстрее загрузка
+
+#### Почему НЕ удалять локальные style.css?
+
+WordPress ожидает файлы, указанные в block.json. Если удалить `style.css`, могут быть:
+- Предупреждения в консоли WordPress
+- Проблемы с некоторыми плагинами
+- Нарушение стандартов WordPress
+
+Решение: оставляем заглушки для совместимости.
+
+### 🔍 Отладка Проблем
+
+#### HMR не работает для блока
+
+**Проблема:** Правки SCSS не применяются мгновенно.
+
+**Решение:**
+1. Проверь импорт в `src/scss/blocks/_index.scss`:
+   ```scss
+   @import 'category/block-name'; // должен быть
+   ```
+2. Проверь консоль браузера - должно быть `[vite] css hot updated:`
+3. Проверь, что dev сервер запущен: `npm run dev`
+
+#### Стили не применяются на фронтенде
+
+**Проблема:** Блок отображается без стилей.
+
+**Решение:**
+1. Проверь, что SCSS блока импортирован в `_index.scss`
+2. Пересобери: `npm run build`
+3. Проверь `dist/manifest.json` - должен быть `main.css`
+4. Очисти кеш браузера (Ctrl+Shift+R)
+
+#### Стили редактора не применяются
+
+**Проблема:** В редакторе WordPress блок выглядит не так.
+
+**Решение:**
+1. Проверь, что `editor.css` скомпилирован из `editor.scss`
+2. Проверь версионирование в register.php:
+   ```php
+   filemtime( $editor_css ) // должно обновляться
+   ```
+3. Очисти кеш WordPress и браузера
+4. Проверь, что в block.json: `"editorStyle": "file:./editor.css"`
+
+#### Библиотеки не загружаются
+
+**Проблема:** Swiper/Fancybox не работают в блоке.
+
+**Решение:**
+1. Добавь зависимость в register.php:
+   ```php
+   [ 'bemazal-swiper', 'bemazal-fancybox' ]
+   ```
+2. Добавь маппинг в `includes/libraries-loader.php`:
+   ```php
+   'namespace/block-name' => [ 'swiper', 'fancybox' ]
+   ```
+3. Используй глобальные объекты:
+   ```javascript
+   window.Swiper, window.Fancybox, window.Masonry
+   ```
+
+### 📚 Примеры Существующих Блоков
+
+**Простой блок (только Swiper):**
+```
+gutenberg-blocks/slider/carousel/
+└── register.php → [ 'bemazal-swiper' ]
+```
+
+**Сложный блок (Swiper + Fancybox):**
+```
+gutenberg-blocks/gallery/thumbs-gallery/
+└── register.php → [ 'bemazal-swiper', 'bemazal-fancybox' ]
+```
+
+**С Masonry:**
+```
+gutenberg-blocks/gallery/masonry-gallery/
+└── register.php → [ 'bemazal-fancybox', 'bemazal-masonry' ]
+```
+
+Изучи эти блоки как референс!
+
+### 🎯 Лучшие Практики
+
+1. **ВСЕГДА импортируй SCSS в _index.scss** - без этого HMR не работает
+2. **НЕ используй условную загрузку стилей** - они уже в main.css
+3. **Используй централизованные библиотеки** - не дублируй Swiper/Fancybox
+4. **Следуй naming conventions** - `namespace/block-name` в kebab-case
+5. **Версионируй ассеты через filemtime()** - избегай проблем с кешем
+6. **Проверяй has_block()** - загружай скрипты только когда блок есть на странице
+7. **Компилируй editor.scss в editor.css** - не используй исходники напрямую
+8. **Оставляй заглушки style.css** - для WordPress-совместимости
+9. **Тестируй HMR** - правь SCSS и смотри мгновенное обновление
+10. **Пересобирай перед коммитом** - `npm run build` для продакшена
+
 ## Known Issues
 
 - Bootstrap SCSS shows deprecation warnings (not critical, affects Bootstrap itself)
