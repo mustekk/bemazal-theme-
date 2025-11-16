@@ -29,11 +29,22 @@
       const [showLinkPicker, setShowLinkPicker] = useState(false);
 
       const blockProps = useBlockProps({
-        className: 'text-overlay-editor',
-        style: {
-          minHeight: (a.minHeight || 500) + 'px'
-        }
+        className: 'text-overlay-editor'
       });
+
+      // Вычисляем margin-top на основе вертикального выравнивания
+      const getMarginTop = () => {
+        if (a.overlayVerticalAlign === 'top') return '50px';
+        if (a.overlayVerticalAlign === 'bottom') return '-250px';
+        return '-150px'; // center
+      };
+
+      // Вычисляем margin-left/right на основе позиции
+      const getHorizontalMargin = () => {
+        if (a.overlayPosition === 'left') return { marginLeft: '5%', marginRight: 'auto' };
+        if (a.overlayPosition === 'center') return { marginLeft: 'auto', marginRight: 'auto' };
+        return { marginLeft: 'auto', marginRight: '5%' }; // right
+      };
 
       const overlayStyles = {
         backgroundColor: a.overlayBackgroundColor || '#ffffff',
@@ -41,12 +52,11 @@
         padding: (a.overlayPadding || 40) + 'px',
         textAlign: a.textAlign || 'right',
         width: (a.overlayWidth || 45) + '%',
-        position: 'absolute',
-        [a.overlayPosition || 'right']: '0',
-        top: a.overlayVerticalAlign === 'top' ? '0' :
-             a.overlayVerticalAlign === 'bottom' ? 'auto' : '50%',
-        bottom: a.overlayVerticalAlign === 'bottom' ? '0' : 'auto',
-        transform: a.overlayVerticalAlign === 'center' ? 'translateY(-50%)' : 'none'
+        maxWidth: '600px',
+        position: 'relative',
+        marginTop: getMarginTop(),
+        boxShadow: '0 10px 40px rgba(0, 0, 0, 0.15)',
+        ...getHorizontalMargin()
       };
 
       const inspector = el(
@@ -254,28 +264,41 @@
           blockProps,
           a.desktopImage ? el(
             'div',
-            { style: { position: 'relative', width: '100%', height: '100%' } },
-            el('img', {
-              src: a.desktopImage,
-              alt: a.imageAlt || '',
-              style: {
-                width: '100%',
-                height: '100%',
-                objectFit: 'cover',
-                display: 'block'
-              }
-            }),
-            a.imageOverlayOpacity > 0 && el('div', {
-              style: {
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                width: '100%',
-                height: '100%',
-                backgroundColor: 'rgba(0, 0, 0, ' + (a.imageOverlayOpacity || 0) + ')',
-                pointerEvents: 'none'
-              }
-            }),
+            { style: { display: 'flex', flexDirection: 'column', width: '100%' } },
+            el(
+              'div',
+              {
+                style: {
+                  position: 'relative',
+                  width: '100%',
+                  minHeight: (a.minHeight || 500) + 'px',
+                  overflow: 'hidden'
+                }
+              },
+              el('img', {
+                src: a.desktopImage,
+                alt: a.imageAlt || '',
+                style: {
+                  width: '100%',
+                  height: '100%',
+                  minHeight: 'inherit',
+                  objectFit: 'cover',
+                  display: 'block'
+                }
+              }),
+              a.imageOverlayOpacity > 0 && el('div', {
+                style: {
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  width: '100%',
+                  height: '100%',
+                  backgroundColor: 'rgba(0, 0, 0, ' + (a.imageOverlayOpacity || 0) + ')',
+                  pointerEvents: 'none',
+                  zIndex: 1
+                }
+              })
+            ),
             el(
               'div',
               { style: overlayStyles },
@@ -408,14 +431,9 @@
           '--text-overlay-color': a.overlayTextColor || '#000000',
           '--text-overlay-padding': (a.overlayPadding || 40) + 'px',
           '--text-overlay-width': (a.overlayWidth || 45) + '%',
-          '--text-overlay-position': a.overlayPosition || 'right',
           '--text-overlay-text-align': a.textAlign || 'right',
-          '--text-overlay-vertical-align': a.overlayVerticalAlign || 'center',
           '--image-overlay-opacity': a.imageOverlayOpacity || 0
-        },
-        'data-position': a.overlayPosition || 'right',
-        'data-vertical-align': a.overlayVerticalAlign || 'center',
-        'data-button-style': a.buttonStyle || 'outline'
+        }
       });
 
       return el(
@@ -438,7 +456,12 @@
           ),
           el(
             'div',
-            { className: 'text-overlay-content' },
+            {
+              className: 'text-overlay-content',
+              'data-position': a.overlayPosition || 'right',
+              'data-vertical-align': a.overlayVerticalAlign || 'center',
+              'data-button-style': a.buttonStyle || 'outline'
+            },
             a.heading && el(RichText.Content, {
               tagName: 'h2',
               className: 'text-overlay-heading',

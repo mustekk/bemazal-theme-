@@ -1,33 +1,30 @@
 /**
  * Text Overlay Block - Production Styles
  * Продакшн стили для блока Text Overlay
+ * Контент "заезжает" на изображение через negative margin
  */
 
 .wp-block-bemazal-text-overlay {
-  position: relative;
   width: 100%;
-  min-height: var(--text-overlay-min-height, 500px);
-  overflow: hidden;
+  overflow: visible;
 
   .text-overlay-container {
-    position: relative;
     width: 100%;
-    height: 100%;
-    min-height: inherit;
+    display: flex;
+    flex-direction: column;
   }
 
   .text-overlay-image-wrapper {
-    position: absolute;
-    top: 0;
-    left: 0;
+    position: relative;
     width: 100%;
-    height: 100%;
-    z-index: 1;
+    min-height: var(--text-overlay-min-height, 500px);
+    overflow: hidden;
   }
 
   .text-overlay-image {
     width: 100%;
     height: 100%;
+    min-height: inherit;
     object-fit: cover;
     display: block;
   }
@@ -40,65 +37,57 @@
     height: 100%;
     background-color: rgba(0, 0, 0, var(--image-overlay-opacity, 0));
     pointer-events: none;
-    z-index: 2;
+    z-index: 1;
   }
 
   .text-overlay-content {
-    position: absolute;
-    z-index: 3;
+    position: relative;
     background-color: var(--text-overlay-bg, #ffffff);
     color: var(--text-overlay-color, #000000);
     padding: var(--text-overlay-padding, 40px);
     width: var(--text-overlay-width, 45%);
+    max-width: 600px;
     text-align: var(--text-overlay-text-align, right);
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
     transition: all 0.3s ease;
+    z-index: 2;
 
-    // Горизонтальное позиционирование
+    // Базовый отступ вверх чтобы заехать на изображение
+    margin-top: -150px;
+
+    // Горизонтальное позиционирование через margin
     &[data-position="left"],
     [data-position="left"] & {
-      left: 0;
-      right: auto;
+      margin-left: 5%;
+      margin-right: auto;
     }
 
     &[data-position="center"],
     [data-position="center"] & {
-      left: 50%;
-      transform: translateX(-50%);
+      margin-left: auto;
+      margin-right: auto;
     }
 
     &[data-position="right"],
     [data-position="right"] & {
-      right: 0;
-      left: auto;
+      margin-left: auto;
+      margin-right: 5%;
     }
 
-    // Вертикальное позиционирование
+    // Вертикальное позиционирование через margin-top
     &[data-vertical-align="top"],
     [data-vertical-align="top"] & {
-      top: 0;
-      bottom: auto;
-      transform: none;
+      margin-top: 50px;
     }
 
     &[data-vertical-align="center"],
     [data-vertical-align="center"] & {
-      top: 50%;
-      bottom: auto;
-      transform: translateY(-50%);
+      margin-top: -150px;
     }
 
     &[data-vertical-align="bottom"],
     [data-vertical-align="bottom"] & {
-      bottom: 0;
-      top: auto;
-      transform: none;
-    }
-
-    // Комбинированные трансформации для центра
-    &[data-position="center"][data-vertical-align="center"],
-    [data-position="center"][data-vertical-align="center"] & {
-      transform: translate(-50%, -50%);
+      margin-top: -250px;
     }
   }
 
@@ -175,28 +164,24 @@
     .text-overlay-content {
       width: 60%;
       padding: 30px;
+      margin-top: -120px;
     }
   }
 
   // Адаптивность для мобильных
   @media (max-width: 768px) {
-    min-height: 400px;
-
-    .text-overlay-content {
-      position: relative !important;
-      width: 100% !important;
-      padding: 25px 20px;
-      left: 0 !important;
-      right: 0 !important;
-      top: auto !important;
-      bottom: 0 !important;
-      transform: none !important;
-      text-align: center !important;
+    .text-overlay-image-wrapper {
+      min-height: 400px;
     }
 
-    // Переключение на mobile изображение
-    .text-overlay-image[data-mobile-image]:not([data-mobile-image=""]) {
-      content: attr(data-mobile-image);
+    .text-overlay-content {
+      width: 90% !important;
+      max-width: none;
+      padding: 25px 20px;
+      margin-top: -100px !important;
+      margin-left: 5% !important;
+      margin-right: 5% !important;
+      text-align: center !important;
     }
   }
 
@@ -216,13 +201,3 @@
   }
 }
 
-// Responsive image swap для mobile
-@media (max-width: 768px) {
-  .wp-block-bemazal-text-overlay {
-    .text-overlay-image {
-      &[data-mobile-image]:not([data-mobile-image=""]) {
-        // JavaScript будет менять src на data-mobile-image
-      }
-    }
-  }
-}
