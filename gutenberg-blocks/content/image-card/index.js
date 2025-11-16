@@ -79,19 +79,18 @@
             if (imgWidth) imgStyle.width = (parseInt(imgWidth, 10) || 0) + 'px';
             if (imgHeight) imgStyle.height = (parseInt(imgHeight, 10) || 0) + 'px';
 
-            // Определяем классы и стили на основе настроек
-            const blockClasses = 'bemazal-image-card image-' + imagePosition;
-            const cardStyle = {
+            // Определяем стили на основе настроек
+            const blockClasses = 'bemazal-image-card image-' + (imagePosition || 'left');
+
+            // CSS переменная для управления наложением
+            const blockStyle = {
+                '--card-overlap': (parseInt(cardOverlap) || 10) + '%'
+            };
+
+            const cardContentStyle = {
                 textAlign: textAlign,
                 direction: textAlign === 'right' ? 'rtl' : 'ltr'
             };
-
-            const cardWrapperStyle = {};
-            if (imagePosition === 'left') {
-                cardWrapperStyle.marginLeft = '-' + cardOverlap + '%';
-            } else {
-                cardWrapperStyle.marginRight = '-' + cardOverlap + '%';
-            }
 
             return el(
                 Fragment,
@@ -185,7 +184,7 @@
                             min: 0,
                             max: 30,
                             step: 1,
-                            help: 'Насколько карточка накладывается на изображение'
+                            help: 'Насколько карточка накладывается на изображение (в процентах)'
                         })
                     ),
                     // Панель контента
@@ -231,7 +230,7 @@
                 ),
                 el(
                     'div',
-                    { className: blockClasses + ' ' + (className || '') },
+                    { className: blockClasses + ' ' + (className || ''), style: blockStyle },
                     el(
                         'div',
                         { className: 'image-wrapper' },
@@ -265,10 +264,10 @@
                     ),
                     el(
                         'div',
-                        { className: 'card-wrapper', style: cardWrapperStyle },
+                        { className: 'card-wrapper' },
                         el(
                             'div',
-                            { className: 'card-content', style: cardStyle },
+                            { className: 'card-content', style: cardContentStyle },
                             el(RichText, {
                                 tagName: 'h3',
                                 className: 'card-title',

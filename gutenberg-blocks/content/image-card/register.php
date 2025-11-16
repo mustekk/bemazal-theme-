@@ -98,16 +98,12 @@ function bemazal_image_card_render_block( $attributes, $content = '' ) {
         $card_content_style .= 'direction:ltr;';
     }
 
-    $card_wrapper_style = '';
-    if ( $img_position === 'left' ) {
-        $card_wrapper_style = 'margin-left:-' . intval( $card_overlap ) . '%;';
-    } else {
-        $card_wrapper_style = 'margin-right:-' . intval( $card_overlap ) . '%;';
-    }
+    // CSS переменная для управления наложением карточки
+    $block_style = '--card-overlap:' . intval( $card_overlap ) . '%;';
 
     ob_start();
     ?>
-    <div class="<?php echo esc_attr( $block_class ); ?>">
+    <div class="<?php echo esc_attr( $block_class ); ?>" style="<?php echo esc_attr( $block_style ); ?>">
         <div class="image-wrapper">
             <div class="image-container"<?php echo $wrap_style; ?>>
                 <?php if ( $src ) : ?>
@@ -118,7 +114,7 @@ function bemazal_image_card_render_block( $attributes, $content = '' ) {
                 <?php endif; ?>
             </div>
         </div>
-        <div class="card-wrapper" style="<?php echo esc_attr( $card_wrapper_style ); ?>">
+        <div class="card-wrapper">
             <div class="card-content" style="<?php echo esc_attr( $card_content_style ); ?>">
                 <?php if ( $title ) : ?>
                     <h3 class="card-title"><?php echo $title; ?></h3>

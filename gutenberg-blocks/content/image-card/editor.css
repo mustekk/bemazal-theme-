@@ -6,10 +6,8 @@
 .wp-block[data-type="bemazal/image-card"] .bemazal-image-card {
     position: relative;
     display: flex;
+    flex-direction: row;
     align-items: center;
-    justify-content: space-between;
-    gap: 0;
-    min-height: 300px;
     outline: 1px dashed #e2e2e2;
     padding: 6px;
 }
@@ -58,12 +56,21 @@
     background: #f5f5f5;
 }
 
-/* Обертка карточки в редакторе */
+/* Обертка карточки в редакторе - использует position: absolute */
 .wp-block[data-type="bemazal/image-card"] .card-wrapper {
-    flex: 0 0 50%;
-    max-width: 50%;
-    position: relative;
+    position: absolute;
+    max-width: 600px;
     z-index: 2;
+}
+
+/* Наложение карточки слева (изображение слева) */
+.wp-block[data-type="bemazal/image-card"] .bemazal-image-card.image-left .card-wrapper {
+    right: var(--card-overlap, 10%);
+}
+
+/* Наложение карточки справа (изображение справа) */
+.wp-block[data-type="bemazal/image-card"] .bemazal-image-card.image-right .card-wrapper {
+    left: var(--card-overlap, 10%);
 }
 
 /* Контент карточки в редакторе */
@@ -72,6 +79,7 @@
     padding: 40px 35px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
     min-height: 200px;
+    width: 100%;
 }
 
 /* Заголовок карточки в редакторе */
@@ -124,18 +132,28 @@
 @media (max-width: 782px) {
     .wp-block[data-type="bemazal/image-card"] .bemazal-image-card {
         flex-direction: column;
-        gap: 30px;
     }
 
-    .wp-block[data-type="bemazal/image-card"] .image-wrapper,
-    .wp-block[data-type="bemazal/image-card"] .card-wrapper {
+    .wp-block[data-type="bemazal/image-card"] .image-wrapper {
         flex: 0 0 100%;
         max-width: 100%;
-        margin-left: 0;
+    }
+
+    .wp-block[data-type="bemazal/image-card"] .bemazal-image-card.image-left .card-wrapper,
+    .wp-block[data-type="bemazal/image-card"] .bemazal-image-card.image-right .card-wrapper {
+        position: relative;
+        flex: 0 0 100%;
+        max-width: 100%;
+        left: auto;
+        right: auto;
+        margin-top: -40px;
+        display: flex;
+        justify-content: center;
+        padding: 0 10px;
     }
 
     .wp-block[data-type="bemazal/image-card"] .card-content {
-        text-align: inherit;
-        direction: inherit;
+        padding: 30px 25px;
+        max-width: 100%;
     }
 }
