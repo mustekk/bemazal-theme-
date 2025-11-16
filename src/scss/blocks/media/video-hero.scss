@@ -42,7 +42,6 @@
   width: 100%;
   min-height: var(--video-hero-min-height, 600px);
   overflow: hidden;
-
   // Full Width alignment - также применяем к самому блоку
   &.alignfull {
     width: 100vw;
@@ -522,3 +521,7 @@
     }
   }
 }
+
+
+
+

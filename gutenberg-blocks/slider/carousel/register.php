@@ -34,7 +34,8 @@ add_action( 'wp_enqueue_scripts', function () {
     $block_url = get_stylesheet_directory_uri() . '/gutenberg-blocks/slider/carousel';
 
     // Enqueue block-specific styles
-    bemazal_enqueue_block_style( 'scb/swiper-carousel', 'slider/carousel', 'scb-swiper-carousel-style' );
+    // Block styles now bundled in main.css - HMR support enabled
+    //     bemazal_enqueue_block_style( 'scb/swiper-carousel', 'slider/carousel', 'scb-swiper-carousel-style' );
 
     // Enqueue block-specific initialization script
     // Dependencies: centralized Swiper (loaded automatically)

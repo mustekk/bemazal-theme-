@@ -34,7 +34,8 @@ add_action( 'wp_enqueue_scripts', function () {
     $block_url = get_stylesheet_directory_uri() . '/gutenberg-blocks/media/image-hero';
 
     // Enqueue block-specific styles
-    bemazal_enqueue_block_style( 'bemazal/image-hero', 'media/image-hero', 'image-hero-style' );
+    // Block styles now bundled in main.css - HMR support enabled
+    //     bemazal_enqueue_block_style( 'bemazal/image-hero', 'media/image-hero', 'image-hero-style' );
 
     // Enqueue block-specific initialization script
     // Dependencies: centralized Swiper (loaded automatically)

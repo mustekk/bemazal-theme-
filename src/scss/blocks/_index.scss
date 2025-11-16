@@ -12,12 +12,22 @@
 // Shared utilities and mixins
 @import 'shared';
 
-// Gallery blocks - base structure only
-// (Full styles loaded conditionally when block is present)
+// ========================================
+// Gallery blocks
+// ========================================
+@import 'gallery/thumbs-gallery';
+@import 'gallery/masonry-gallery';
 
-// Slider blocks - base structure only
+// ========================================
+// Slider blocks
+// ========================================
+@import 'slider/carousel';
 
-// Content blocks - base structure only
+// ========================================
+// Media blocks
+// ========================================
+@import 'media/image-hero';
+@import 'media/video-hero';
 
 // Global block enhancements
 .wp-block {

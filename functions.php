@@ -206,3 +206,4 @@ add_filter( 'show_admin_bar', '__return_false' );
  * found in category folders (gallery, slider, content, etc.).
  */
 require_once get_template_directory() . '/gutenberg-blocks/blocks-loader.php';
+

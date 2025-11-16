@@ -34,7 +34,8 @@ add_action( 'wp_enqueue_scripts', function () {
     $block_url = get_stylesheet_directory_uri() . '/gutenberg-blocks/gallery/masonry-gallery';
 
     // Enqueue block-specific styles
-    bemazal_enqueue_block_style( 'tg/fbmp-gallery', 'gallery/masonry-gallery', 'tg-fbmp-gallery-style' );
+    // Block styles now bundled in main.css - HMR support enabled
+    //     bemazal_enqueue_block_style( 'tg/fbmp-gallery', 'gallery/masonry-gallery', 'tg-fbmp-gallery-style' );
 
     // Enqueue block-specific initialization script
     // Dependencies: centralized Fancybox and Masonry (loaded automatically)

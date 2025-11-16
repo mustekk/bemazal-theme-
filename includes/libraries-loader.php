@@ -324,25 +324,15 @@ function bemazal_enqueue_block_style( $block_name, $block_slug, $handle ) {
         return;
     }
 
-    if ( bemazal_is_dev() ) {
-        // Development: Load SCSS directly from Vite dev server
-        $vite_server = bemazal_get_vite_server();
-        $scss_path = "src/scss/blocks/{$block_slug}.scss";
-
-        // Vite can compile SCSS on the fly in dev mode
-        wp_enqueue_style(
-            $handle,
-            "{$vite_server}/{$scss_path}",
-            [],
-            null // No version - Vite handles HMR
-        );
-        return;
-    }
-
-    // Production: load from manifest
+    // Both dev and production: load from manifest
+    // Block styles are pre-compiled in dist/ directory
+    // Note: Vite dev server cannot serve individual SCSS files directly
+    // All block styles must be compiled via `npm run build` first
     $css_url = bemazal_get_block_style_asset( $block_slug );
     if ( $css_url ) {
-        wp_enqueue_style( $handle, $css_url, [], BEMAZAL_VERSION );
+        // In dev mode, disable cache to always get latest version
+        $version = bemazal_is_dev() ? time() : BEMAZAL_VERSION;
+        wp_enqueue_style( $handle, $css_url, [], $version );
     }
 }
 

@@ -34,13 +34,8 @@ export default defineConfig(({ command, mode }) => {
                     'libraries-swiper': path.resolve(themeRoot, 'src/js/libraries/swiper.js'),
                     'libraries-fancybox': path.resolve(themeRoot, 'src/js/libraries/fancybox.js'),
                     'libraries-masonry': path.resolve(themeRoot, 'src/js/libraries/masonry.js'),
-                    // Separate entry points for block styles (loaded on-demand)
-                    'block-thumbs-gallery': path.resolve(themeRoot, 'src/scss/blocks/gallery/thumbs-gallery.scss'),
-                    'block-masonry-gallery': path.resolve(themeRoot, 'src/scss/blocks/gallery/masonry-gallery.scss'),
-                    'block-carousel': path.resolve(themeRoot, 'src/scss/blocks/slider/carousel.scss'),
-                    'block-image-card': path.resolve(themeRoot, 'src/scss/blocks/content/image-card.scss'),
-                    'block-video-hero': path.resolve(themeRoot, 'src/scss/blocks/media/video-hero.scss'),
-                    'block-image-hero': path.resolve(themeRoot, 'src/scss/blocks/media/image-hero.scss'),
+                    // Block styles are now bundled in main.css for better HMR support
+                    // and fewer HTTP requests (one main.css instead of multiple block-*.css files)
                 },
                 output: {
                     // Optimize chunk splitting for better caching

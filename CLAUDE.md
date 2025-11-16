@@ -270,7 +270,6 @@ gutenberg-blocks/
 ├── slider/               # Slider and carousel blocks
 │   └── carousel/         # Swiper carousel block
 ├── content/              # Content blocks
-│   └── image-card/       # Image + Card layout block
 ├── blocks-loader.php     # Auto-loader for all blocks
 └── README.md            # Detailed documentation
 ```
@@ -318,9 +317,6 @@ See `gutenberg-blocks/README.md` for detailed instructions and examples.
 
 **Slider:**
 - `scb/swiper-carousel` - Responsive Swiper carousel
-
-**Content:**
-- `bemazal/one-v-one` - Image + Card layout with server-side rendering
 
 ### Block Assets
 

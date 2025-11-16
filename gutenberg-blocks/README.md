@@ -12,7 +12,6 @@ gutenberg-blocks/
 ├── slider/               # Slider and carousel blocks
 │   └── carousel/         # Swiper carousel block
 ├── content/              # Content blocks
-│   └── image-card/       # Image + Card layout block
 ├── blocks-loader.php     # Auto-loader for all blocks
 └── README.md            # This file
 ```
@@ -206,14 +205,6 @@ The theme includes a custom "Bemazal" category for all theme-specific blocks. Th
 - Responsive breakpoints
 - Autoplay and navigation
 - Custom aspect ratios
-
-### Content Category
-
-**image-card** (`bemazal/one-v-one`)
-- Image + card layout
-- Custom aspect ratios
-- Server-side rendering
-- Resolution selector
 
 ## Local vs CDN Assets
 
