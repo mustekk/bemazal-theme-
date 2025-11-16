@@ -81,17 +81,16 @@
 
             // Определяем стили на основе настроек
             const blockClasses = 'bemazal-image-card image-' + (imagePosition || 'left');
-            const cardStyle = {
+
+            // CSS переменная для управления наложением
+            const blockStyle = {
+                '--card-overlap': (parseInt(cardOverlap) || 10) + '%'
+            };
+
+            const cardContentStyle = {
                 textAlign: textAlign,
                 direction: textAlign === 'right' ? 'rtl' : 'ltr'
             };
-
-            const cardWrapperStyle = {};
-            if (imagePosition === 'left') {
-                cardWrapperStyle.marginLeft = '-' + (parseInt(cardOverlap) || 10) + '%';
-            } else {
-                cardWrapperStyle.marginRight = '-' + (parseInt(cardOverlap) || 10) + '%';
-            }
 
             return el(
                 Fragment,
@@ -231,7 +230,7 @@
                 ),
                 el(
                     'div',
-                    { className: blockClasses + ' ' + (className || '') },
+                    { className: blockClasses + ' ' + (className || ''), style: blockStyle },
                     el(
                         'div',
                         { className: 'image-wrapper' },
@@ -265,10 +264,10 @@
                     ),
                     el(
                         'div',
-                        { className: 'card-wrapper', style: cardWrapperStyle },
+                        { className: 'card-wrapper' },
                         el(
                             'div',
-                            { className: 'card-content', style: cardStyle },
+                            { className: 'card-content', style: cardContentStyle },
                             el(RichText, {
                                 tagName: 'h3',
                                 className: 'card-title',
