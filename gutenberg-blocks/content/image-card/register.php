@@ -46,9 +46,8 @@ function bemazal_image_card_render_block( $attributes, $content = '' ) {
     $btn_text     = isset( $attributes['buttonText'] )   ? sanitize_text_field( $attributes['buttonText'] )   : '';
     $btn_url      = isset( $attributes['buttonUrl'] )    ? esc_url_raw( $attributes['buttonUrl'] )    : '';
     $btn_target   = isset( $attributes['buttonTarget'] ) ? (bool) $attributes['buttonTarget']         : false;
-    $img_position = isset( $attributes['imagePosition'] ) ? sanitize_text_field( $attributes['imagePosition'] ) : 'left';
     $text_align   = isset( $attributes['textAlign'] )    ? sanitize_text_field( $attributes['textAlign'] )    : 'right';
-    $card_overlap = isset( $attributes['cardOverlap'] )  ? intval( $attributes['cardOverlap'] )       : 10;
+    $card_overlap = isset( $attributes['cardOverlap'] )  ? intval( $attributes['cardOverlap'] )       : 80;
 
     $src = $srcset = $sizes_attr = '';
 
@@ -88,9 +87,7 @@ function bemazal_image_card_render_block( $attributes, $content = '' ) {
         $wrap_style  = ' style="aspect-ratio:' . esc_attr( str_replace(':','/', $clean_ratio) ) . ';"';
     }
 
-    // Формируем классы и inline-стили для блока
-    $block_class = 'bemazal-image-card image-' . esc_attr( $img_position );
-
+    // Формируем inline-стили для блока
     $card_content_style = 'text-align:' . esc_attr( $text_align ) . ';';
     if ( $text_align === 'right' ) {
         $card_content_style .= 'direction:rtl;';
@@ -98,16 +95,12 @@ function bemazal_image_card_render_block( $attributes, $content = '' ) {
         $card_content_style .= 'direction:ltr;';
     }
 
-    $card_wrapper_style = '';
-    if ( $img_position === 'left' ) {
-        $card_wrapper_style = 'margin-left:-' . intval( $card_overlap ) . '%;';
-    } else {
-        $card_wrapper_style = 'margin-right:-' . intval( $card_overlap ) . '%;';
-    }
+    // Стиль для наложения карточки (margin-top)
+    $card_wrapper_style = 'margin-top:-' . intval( $card_overlap ) . 'px;';
 
     ob_start();
     ?>
-    <div class="<?php echo esc_attr( $block_class ); ?>">
+    <div class="bemazal-image-card">
         <div class="image-wrapper">
             <div class="image-container"<?php echo $wrap_style; ?>>
                 <?php if ( $src ) : ?>

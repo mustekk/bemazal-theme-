@@ -32,7 +32,7 @@
                 mediaID, mediaAlt, mediaURL, mediaSize, mediaSizes,
                 aspectRatio, imgWidth, imgHeight,
                 title, text, buttonText, buttonUrl, buttonTarget,
-                imagePosition, textAlign, cardOverlap
+                textAlign, cardOverlap
             } = attributes;
 
             function onSelectMedia(media) {
@@ -79,19 +79,15 @@
             if (imgWidth) imgStyle.width = (parseInt(imgWidth, 10) || 0) + 'px';
             if (imgHeight) imgStyle.height = (parseInt(imgHeight, 10) || 0) + 'px';
 
-            // Определяем классы и стили на основе настроек
-            const blockClasses = 'bemazal-image-card image-' + imagePosition;
+            // Определяем стили на основе настроек
             const cardStyle = {
                 textAlign: textAlign,
                 direction: textAlign === 'right' ? 'rtl' : 'ltr'
             };
 
-            const cardWrapperStyle = {};
-            if (imagePosition === 'left') {
-                cardWrapperStyle.marginLeft = '-' + cardOverlap + '%';
-            } else {
-                cardWrapperStyle.marginRight = '-' + cardOverlap + '%';
-            }
+            const cardWrapperStyle = {
+                marginTop: '-' + (parseInt(cardOverlap) || 80) + 'px'
+            };
 
             return el(
                 Fragment,
@@ -168,24 +164,14 @@
                     el(
                         PanelBody,
                         { title: '📐 Настройки макета', initialOpen: false },
-                        el(SelectControl, {
-                            label: 'Позиция изображения',
-                            value: imagePosition || 'left',
-                            options: [
-                                { label: '← Слева', value: 'left' },
-                                { label: 'Справа →', value: 'right' }
-                            ],
-                            onChange: (v) => setAttributes({ imagePosition: v }),
-                            help: 'Расположение изображения относительно карточки'
-                        }),
                         el(RangeControl, {
-                            label: 'Наложение карточки (%)',
-                            value: parseInt(cardOverlap) || 10,
+                            label: 'Наложение карточки (px)',
+                            value: parseInt(cardOverlap) || 80,
                             onChange: (v) => setAttributes({ cardOverlap: String(v) }),
                             min: 0,
-                            max: 30,
-                            step: 1,
-                            help: 'Насколько карточка накладывается на изображение'
+                            max: 200,
+                            step: 10,
+                            help: 'Насколько карточка накладывается на изображение сверху (в пикселях)'
                         })
                     ),
                     // Панель контента
@@ -231,7 +217,7 @@
                 ),
                 el(
                     'div',
-                    { className: blockClasses + ' ' + (className || '') },
+                    { className: 'bemazal-image-card ' + (className || '') },
                     el(
                         'div',
                         { className: 'image-wrapper' },
