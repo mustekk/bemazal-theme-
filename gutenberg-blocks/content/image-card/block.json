@@ -71,13 +71,17 @@
       "type": "boolean",
       "default": false
     },
+    "imagePosition": {
+      "type": "string",
+      "default": "left"
+    },
     "textAlign": {
       "type": "string",
       "default": "right"
     },
     "cardOverlap": {
       "type": "string",
-      "default": "80"
+      "default": "10"
     }
   },
   "editorScript": "file:./index.js",

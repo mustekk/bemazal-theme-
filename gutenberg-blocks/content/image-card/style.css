@@ -6,15 +6,27 @@
 .bemazal-image-card {
     position: relative;
     display: flex;
-    flex-direction: column;
+    flex-direction: row; /* Горизонтальный layout */
+    align-items: center;
     max-width: 1200px;
     margin: 0 auto;
     box-sizing: border-box;
 }
 
+/* Изображение слева (по умолчанию) */
+.bemazal-image-card.image-left {
+    flex-direction: row;
+}
+
+/* Изображение справа */
+.bemazal-image-card.image-right {
+    flex-direction: row-reverse;
+}
+
 /* Обертка изображения */
 .bemazal-image-card .image-wrapper {
-    width: 100%;
+    flex: 0 0 60%;
+    max-width: 60%;
     position: relative;
     z-index: 1;
 }
@@ -33,16 +45,22 @@
     object-fit: cover;
 }
 
-/* Обертка карточки - накладывается сверху на изображение */
+/* Обертка карточки - накладывается на изображение */
 .bemazal-image-card .card-wrapper {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    padding: 0 20px;
-    box-sizing: border-box;
+    flex: 0 0 auto;
+    max-width: 600px;
     position: relative;
     z-index: 2;
-    margin-top: -80px; /* Наложение на изображение сверху */
+}
+
+/* Наложение карточки слева на изображение */
+.bemazal-image-card.image-left .card-wrapper {
+    margin-left: -10%; /* Накладывается на изображение */
+}
+
+/* Наложение карточки справа на изображение */
+.bemazal-image-card.image-right .card-wrapper {
+    margin-right: -10%; /* Накладывается на изображение */
 }
 
 /* Контент карточки */
@@ -50,7 +68,6 @@
     background: #ffffff;
     padding: 40px 35px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    max-width: 600px;
     width: 100%;
 }
 
@@ -116,9 +133,28 @@
 
 /* Адаптивность для планшетов */
 @media (max-width: 992px) {
+    .bemazal-image-card {
+        flex-direction: column;
+    }
+
+    .bemazal-image-card .image-wrapper {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+
+    .bemazal-image-card.image-left .card-wrapper,
+    .bemazal-image-card.image-right .card-wrapper {
+        flex: 0 0 100%;
+        max-width: 100%;
+        margin-left: 0;
+        margin-right: 0;
+        margin-top: -60px; /* Вертикальное наложение на планшетах */
+    }
+
     .bemazal-image-card .card-wrapper {
-        margin-top: -60px;
-        padding: 0 15px;
+        display: flex;
+        justify-content: center;
+        padding: 0 20px;
     }
 
     .bemazal-image-card .card-content {
@@ -129,7 +165,8 @@
 
 /* Адаптивность для мобильных */
 @media (max-width: 576px) {
-    .bemazal-image-card .card-wrapper {
+    .bemazal-image-card.image-left .card-wrapper,
+    .bemazal-image-card.image-right .card-wrapper {
         margin-top: -40px;
         padding: 0 10px;
     }
