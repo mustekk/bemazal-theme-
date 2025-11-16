@@ -1,6 +1,6 @@
 <?php
 /**
- * Block: Bemazal – 1v1 (Image + Card)
+ * Block: Bemazal – Image + Card
  * Path: /gutenberg-blocks/content/image-card
  *
  * Note: Block registration is handled by blocks-loader.php
@@ -8,8 +8,8 @@
  */
 
 // Custom render callback is hooked via filter in blocks-loader.php
-add_filter( 'bemazal_block_render_callback_bemazal/one-v-one', function() {
-    return 'bemazal_1v1_render_block';
+add_filter( 'bemazal_block_render_callback_bemazal/image-card', function() {
+    return 'bemazal_image_card_render_block';
 } );
 
 /**
@@ -22,18 +22,18 @@ add_action( 'wp_enqueue_scripts', function () {
     }
 
     // Check if block is present on the page
-    if ( ! has_block( 'bemazal/one-v-one' ) ) {
+    if ( ! has_block( 'bemazal/image-card' ) ) {
         return;
     }
 
     // Enqueue block-specific styles
-    bemazal_enqueue_block_style( 'bemazal/one-v-one', 'content/image-card', 'bemazal-image-card-style' );
+    bemazal_enqueue_block_style( 'bemazal/image-card', 'content/image-card', 'bemazal-image-card-style' );
 }, 25 ); // Priority 25 - after libraries are enqueued at priority 20
 
 /**
  * Серверный рендер: собираем правильный URL/alt/srcset по ID и выбранному размеру.
  */
-function bemazal_1v1_render_block( $attributes, $content = '' ) {
+function bemazal_image_card_render_block( $attributes, $content = '' ) {
     $media_id   = isset( $attributes['mediaID'] ) ? intval( $attributes['mediaID'] ) : 0;
     $media_alt  = isset( $attributes['mediaAlt'] ) ? sanitize_text_field( $attributes['mediaAlt'] ) : '';
     $media_size = ! empty( $attributes['mediaSize'] ) ? sanitize_key( $attributes['mediaSize'] ) : 'full';
@@ -41,10 +41,14 @@ function bemazal_1v1_render_block( $attributes, $content = '' ) {
     $img_height = isset( $attributes['imgHeight'] ) ? trim( (string) $attributes['imgHeight'] ) : '';
     $ratio      = isset( $attributes['aspectRatio'] ) ? sanitize_text_field( $attributes['aspectRatio'] ) : 'original';
 
-    $title      = isset( $attributes['title'] )      ? wp_kses_post( $attributes['title'] )      : '';
-    $text       = isset( $attributes['text'] )       ? wp_kses_post( $attributes['text'] )       : '';
-    $btn_text   = isset( $attributes['buttonText'] ) ? sanitize_text_field( $attributes['buttonText'] ) : '';
-    $btn_url    = isset( $attributes['buttonUrl'] )  ? esc_url_raw( $attributes['buttonUrl'] )  : '';
+    $title        = isset( $attributes['title'] )        ? wp_kses_post( $attributes['title'] )        : '';
+    $text         = isset( $attributes['text'] )         ? wp_kses_post( $attributes['text'] )         : '';
+    $btn_text     = isset( $attributes['buttonText'] )   ? sanitize_text_field( $attributes['buttonText'] )   : '';
+    $btn_url      = isset( $attributes['buttonUrl'] )    ? esc_url_raw( $attributes['buttonUrl'] )    : '';
+    $btn_target   = isset( $attributes['buttonTarget'] ) ? (bool) $attributes['buttonTarget']         : false;
+    $img_position = isset( $attributes['imagePosition'] ) ? sanitize_text_field( $attributes['imagePosition'] ) : 'left';
+    $text_align   = isset( $attributes['textAlign'] )    ? sanitize_text_field( $attributes['textAlign'] )    : 'right';
+    $card_overlap = isset( $attributes['cardOverlap'] )  ? intval( $attributes['cardOverlap'] )       : 10;
 
     $src = $srcset = $sizes_attr = '';
 
@@ -84,11 +88,28 @@ function bemazal_1v1_render_block( $attributes, $content = '' ) {
         $wrap_style  = ' style="aspect-ratio:' . esc_attr( str_replace(':','/', $clean_ratio) ) . ';"';
     }
 
+    // Формируем классы и inline-стили для блока
+    $block_class = 'bemazal-image-card image-' . esc_attr( $img_position );
+
+    $card_content_style = 'text-align:' . esc_attr( $text_align ) . ';';
+    if ( $text_align === 'right' ) {
+        $card_content_style .= 'direction:rtl;';
+    } elseif ( $text_align === 'left' ) {
+        $card_content_style .= 'direction:ltr;';
+    }
+
+    $card_wrapper_style = '';
+    if ( $img_position === 'left' ) {
+        $card_wrapper_style = 'margin-left:-' . intval( $card_overlap ) . '%;';
+    } else {
+        $card_wrapper_style = 'margin-right:-' . intval( $card_overlap ) . '%;';
+    }
+
     ob_start();
     ?>
-    <div class="bemazal-1v1 is-matrix rel no-padding">
-        <div class="col-8 left-align">
-            <div class="item resp-img"<?php echo $wrap_style; ?>>
+    <div class="<?php echo esc_attr( $block_class ); ?>">
+        <div class="image-wrapper">
+            <div class="image-container"<?php echo $wrap_style; ?>>
                 <?php if ( $src ) : ?>
                     <img src="<?php echo esc_url( $src ); ?>"
                          <?php echo $srcset ? 'srcset="' . esc_attr( $srcset ) . '"' : ''; ?>
@@ -97,17 +118,18 @@ function bemazal_1v1_render_block( $attributes, $content = '' ) {
                 <?php endif; ?>
             </div>
         </div>
-        <div class="col-6 right-align">
-            <div class="hs-description bg-white has-shadow add-20">
+        <div class="card-wrapper" style="<?php echo esc_attr( $card_wrapper_style ); ?>">
+            <div class="card-content" style="<?php echo esc_attr( $card_content_style ); ?>">
                 <?php if ( $title ) : ?>
-                    <h3 class="weight-400"><?php echo $title; ?></h3>
+                    <h3 class="card-title"><?php echo $title; ?></h3>
                 <?php endif; ?>
                 <?php if ( $text ) : ?>
-                    <p class="size-15"><?php echo $text; ?></p>
+                    <p class="card-text"><?php echo $text; ?></p>
                 <?php endif; ?>
                 <?php if ( $btn_text && $btn_url ) : ?>
-                    <br>
-                    <a class="hs-button ghost-dark is-outlined weight-400" href="<?php echo esc_url( $btn_url ); ?>">
+                    <a class="card-button"
+                       href="<?php echo esc_url( $btn_url ); ?>"
+                       <?php echo $btn_target ? 'target="_blank" rel="noopener noreferrer"' : ''; ?>>
                         <?php echo esc_html( $btn_text ); ?>
                     </a>
                 <?php endif; ?>

@@ -1,21 +1,21 @@
 (function (wp) {
     const { registerBlockType } = wp.blocks;
     const { createElement: el, Fragment } = wp.element;
-    const { RichText, MediaUpload, InspectorControls } = wp.blockEditor || wp.editor;
-    const { PanelBody, Button, SelectControl, TextControl, Placeholder, __experimentalUnitControl } = wp.components;
+    const { RichText, MediaUpload, InspectorControls, MediaUploadCheck } = wp.blockEditor || wp.editor;
+    const { PanelBody, Button, SelectControl, TextControl, Placeholder, ToggleControl, RangeControl, ToolbarGroup, ToolbarButton } = wp.components;
+    const { __ } = wp.i18n;
 
     function buildSizeOptions(sizesMap) {
         const human = {
-            thumbnail: 'Thumbnail',
-            medium: 'Medium',
-            medium_large: 'Medium Large',
-            large: 'Large',
-            full: 'Full Size',
+            thumbnail: 'Миниатюра',
+            medium: 'Средний',
+            medium_large: 'Средний большой',
+            large: 'Большой',
+            full: 'Полный размер',
         };
         const keys = sizesMap ? Object.keys(sizesMap) : [];
         const uniq = {};
         const opts = [];
-        // ensure full is present
         if (!keys.includes('full')) keys.push('full');
         keys.forEach(function (k) {
             if (uniq[k]) return;
@@ -25,13 +25,17 @@
         return opts;
     }
 
-    registerBlockType('bemazal/one-v-one', {
+    registerBlockType('bemazal/image-card', {
         edit: function (props) {
             const { attributes, setAttributes, className } = props;
-            const { mediaID, mediaAlt, mediaURL, mediaSize, mediaSizes, aspectRatio, imgWidth, imgHeight, title, text, buttonText, buttonUrl } = attributes;
+            const {
+                mediaID, mediaAlt, mediaURL, mediaSize, mediaSizes,
+                aspectRatio, imgWidth, imgHeight,
+                title, text, buttonText, buttonUrl, buttonTarget,
+                imagePosition, textAlign, cardOverlap
+            } = attributes;
 
             function onSelectMedia(media) {
-                // For images, WP returns sizes in media.sizes or media.media_details.sizes
                 const sizes = media.sizes || (media.media_details && media.media_details.sizes) || {};
                 const map = {};
                 Object.keys(sizes).forEach(function (k) {
@@ -40,7 +44,7 @@
                 map['full'] = media.url || media.source_url || '';
 
                 const nextSize = mediaSize && map[mediaSize] ? mediaSize : 'full';
-                const nextURL  = map[nextSize] || media.url || '';
+                const nextURL = map[nextSize] || media.url || '';
 
                 setAttributes({
                     mediaID: media.id,
@@ -52,26 +56,42 @@
             }
 
             function changeSize(sizeSlug) {
-                const nextURL = (attributes.mediaSizes && attributes.mediaSizes[sizeSlug]) ? attributes.mediaSizes[sizeSlug] : attributes.mediaURL;
+                const nextURL = (attributes.mediaSizes && attributes.mediaSizes[sizeSlug])
+                    ? attributes.mediaSizes[sizeSlug]
+                    : attributes.mediaURL;
                 setAttributes({ mediaSize: sizeSlug, mediaURL: nextURL });
             }
 
             const ratioOptions = [
-                { label: 'Original', value: 'original' },
-                { label: '1:1',     value: '1:1' },
-                { label: '4:3',     value: '4:3' },
-                { label: '3:2',     value: '3:2' },
-                { label: '16:9',    value: '16:9' },
+                { label: 'Оригинал', value: 'original' },
+                { label: '1:1 (Квадрат)', value: '1:1' },
+                { label: '4:3 (Стандарт)', value: '4:3' },
+                { label: '3:2 (Классика)', value: '3:2' },
+                { label: '16:9 (Широкий)', value: '16:9' },
             ];
 
             const aspectStyle = {};
             if (aspectRatio && aspectRatio !== 'original') {
-                aspectStyle.aspectRatio = aspectRatio.replace(':','/');
+                aspectStyle.aspectRatio = aspectRatio.replace(':', '/');
             }
 
             const imgStyle = {};
-            if (imgWidth)  imgStyle.width  = (parseInt(imgWidth,10) || 0)  + 'px';
-            if (imgHeight) imgStyle.height = (parseInt(imgHeight,10) || 0) + 'px';
+            if (imgWidth) imgStyle.width = (parseInt(imgWidth, 10) || 0) + 'px';
+            if (imgHeight) imgStyle.height = (parseInt(imgHeight, 10) || 0) + 'px';
+
+            // Определяем классы и стили на основе настроек
+            const blockClasses = 'bemazal-image-card image-' + imagePosition;
+            const cardStyle = {
+                textAlign: textAlign,
+                direction: textAlign === 'right' ? 'rtl' : 'ltr'
+            };
+
+            const cardWrapperStyle = {};
+            if (imagePosition === 'left') {
+                cardWrapperStyle.marginLeft = '-' + cardOverlap + '%';
+            } else {
+                cardWrapperStyle.marginRight = '-' + cardOverlap + '%';
+            }
 
             return el(
                 Fragment,
@@ -79,105 +99,206 @@
                 el(
                     InspectorControls,
                     null,
+                    // Панель изображения
                     el(
                         PanelBody,
-                        { title: 'Изображение', initialOpen: true },
-                        mediaID ? el(SelectControl, {
-                            label: 'Resolution',
-                            value: mediaSize || 'full',
-                            options: buildSizeOptions(mediaSizes),
-                            onChange: changeSize,
-                        }) : el('div', { style: { color: '#666' } }, 'Выберите изображение, чтобы задать Resolution.'),
-                        el(SelectControl, {
-                            label: 'Aspect Ratio',
-                            value: aspectRatio || 'original',
-                            options: ratioOptions,
-                            onChange: (v) => setAttributes({ aspectRatio: v }),
-                        }),
-                        el(TextControl, {
-                            label: 'Width (px)',
-                            type: 'number',
-                            value: imgWidth || '',
-                            placeholder: 'Auto',
-                            onChange: (v) => setAttributes({ imgWidth: v }),
-                        }),
-                        el(TextControl, {
-                            label: 'Height (px)',
-                            type: 'number',
-                            value: imgHeight || '',
-                            placeholder: 'Auto',
-                            onChange: (v) => setAttributes({ imgHeight: v }),
-                        }),
+                        { title: '🖼️ Настройки изображения', initialOpen: true },
+                        mediaID ? el(
+                            Fragment,
+                            null,
+                            el(
+                                'div',
+                                { style: { marginBottom: '12px' } },
+                                el(
+                                    MediaUploadCheck,
+                                    null,
+                                    el(MediaUpload, {
+                                        onSelect: onSelectMedia,
+                                        allowedTypes: ['image'],
+                                        value: mediaID,
+                                        render: ({ open }) => el(
+                                            Button,
+                                            {
+                                                onClick: open,
+                                                isSecondary: true,
+                                                style: { width: '100%' }
+                                            },
+                                            'Заменить изображение'
+                                        )
+                                    })
+                                )
+                            ),
+                            el(SelectControl, {
+                                label: 'Разрешение',
+                                value: mediaSize || 'full',
+                                options: buildSizeOptions(mediaSizes),
+                                onChange: changeSize,
+                                help: 'Выберите размер изображения'
+                            }),
+                            el(SelectControl, {
+                                label: 'Соотношение сторон',
+                                value: aspectRatio || 'original',
+                                options: ratioOptions,
+                                onChange: (v) => setAttributes({ aspectRatio: v }),
+                                help: 'Принудительное соотношение сторон'
+                            }),
+                            el(TextControl, {
+                                label: 'Ширина (px)',
+                                type: 'number',
+                                value: imgWidth || '',
+                                placeholder: 'Авто',
+                                onChange: (v) => setAttributes({ imgWidth: v }),
+                                help: 'Пользовательская ширина'
+                            }),
+                            el(TextControl, {
+                                label: 'Высота (px)',
+                                type: 'number',
+                                value: imgHeight || '',
+                                placeholder: 'Авто',
+                                onChange: (v) => setAttributes({ imgHeight: v }),
+                                help: 'Пользовательская высота'
+                            })
+                        ) : el(
+                            'p',
+                            { style: { color: '#666', fontSize: '13px' } },
+                            'Выберите изображение для настройки параметров'
+                        )
                     ),
+                    // Панель макета
                     el(
                         PanelBody,
-                        { title: 'Кнопка', initialOpen: false },
+                        { title: '📐 Настройки макета', initialOpen: false },
+                        el(SelectControl, {
+                            label: 'Позиция изображения',
+                            value: imagePosition || 'left',
+                            options: [
+                                { label: '← Слева', value: 'left' },
+                                { label: 'Справа →', value: 'right' }
+                            ],
+                            onChange: (v) => setAttributes({ imagePosition: v }),
+                            help: 'Расположение изображения относительно карточки'
+                        }),
+                        el(RangeControl, {
+                            label: 'Наложение карточки (%)',
+                            value: parseInt(cardOverlap) || 10,
+                            onChange: (v) => setAttributes({ cardOverlap: String(v) }),
+                            min: 0,
+                            max: 30,
+                            step: 1,
+                            help: 'Насколько карточка накладывается на изображение'
+                        })
+                    ),
+                    // Панель контента
+                    el(
+                        PanelBody,
+                        { title: '📝 Настройки контента', initialOpen: false },
+                        el(SelectControl, {
+                            label: 'Выравнивание текста',
+                            value: textAlign || 'right',
+                            options: [
+                                { label: 'По левому краю', value: 'left' },
+                                { label: 'По центру', value: 'center' },
+                                { label: 'По правому краю', value: 'right' }
+                            ],
+                            onChange: (v) => setAttributes({ textAlign: v }),
+                            help: 'Выравнивание текста в карточке'
+                        })
+                    ),
+                    // Панель кнопки
+                    el(
+                        PanelBody,
+                        { title: '🔗 Настройки кнопки', initialOpen: false },
                         el(TextControl, {
                             label: 'Текст кнопки',
                             value: buttonText || '',
+                            placeholder: 'Введите текст...',
                             onChange: (v) => setAttributes({ buttonText: v })
                         }),
                         el(TextControl, {
                             label: 'Ссылка (URL)',
                             value: buttonUrl || '',
-                            onChange: (v) => setAttributes({ buttonUrl: v })
+                            placeholder: 'https://...',
+                            onChange: (v) => setAttributes({ buttonUrl: v }),
+                            type: 'url'
+                        }),
+                        el(ToggleControl, {
+                            label: 'Открывать в новой вкладке',
+                            checked: buttonTarget || false,
+                            onChange: (v) => setAttributes({ buttonTarget: v }),
+                            help: buttonTarget ? 'Ссылка откроется в новой вкладке' : 'Ссылка откроется в той же вкладке'
                         })
                     )
                 ),
                 el(
                     'div',
-                    { className: 'bemazal-1v1 is-matrix rel no-padding ' + (className || '') },
+                    { className: blockClasses + ' ' + (className || '') },
                     el(
                         'div',
-                        { className: 'col-8 left-align' },
+                        { className: 'image-wrapper' },
                         el(
                             'div',
-                            { className: 'item resp-img', style: aspectStyle },
+                            { className: 'image-container', style: aspectStyle },
                             mediaURL
                                 ? el('img', { src: mediaURL, alt: mediaAlt || '', style: imgStyle })
                                 : el(
                                     Placeholder,
-                                    { label: 'Изображение' },
-                                    el(MediaUpload, {
-                                        onSelect: onSelectMedia,
-                                        allowedTypes: ['image'],
-                                        value: mediaID,
-                                        render: ({ open }) => el(Button, { onClick: open, isSecondary: true }, 'Выбрать изображение')
-                                    })
-                                  )
+                                    {
+                                        label: 'Изображение',
+                                        instructions: 'Выберите изображение из медиатеки или загрузите новое'
+                                    },
+                                    el(
+                                        MediaUploadCheck,
+                                        null,
+                                        el(MediaUpload, {
+                                            onSelect: onSelectMedia,
+                                            allowedTypes: ['image'],
+                                            value: mediaID,
+                                            render: ({ open }) => el(
+                                                Button,
+                                                { onClick: open, isPrimary: true },
+                                                'Выбрать изображение'
+                                            )
+                                        })
+                                    )
+                                )
                         )
                     ),
                     el(
                         'div',
-                        { className: 'col-6 right-align' },
+                        { className: 'card-wrapper', style: cardWrapperStyle },
                         el(
                             'div',
-                            { className: 'hs-description bg-white has-shadow add-20' },
+                            { className: 'card-content', style: cardStyle },
                             el(RichText, {
                                 tagName: 'h3',
-                                className: 'weight-400',
-                                placeholder: 'Заголовок…',
+                                className: 'card-title',
+                                placeholder: 'Добавьте заголовок...',
                                 value: title,
                                 onChange: (v) => setAttributes({ title: v })
                             }),
                             el(RichText, {
                                 tagName: 'p',
-                                className: 'size-15',
-                                placeholder: 'Текст…',
+                                className: 'card-text',
+                                placeholder: 'Добавьте описание...',
                                 value: text,
                                 onChange: (v) => setAttributes({ text: v })
                             }),
-                            el('br'),
-                            el(
+                            buttonText ? el(
                                 'a',
-                                { className: 'hs-button ghost-dark is-outlined weight-400', href: buttonUrl || '#', onClick: (e) => e.preventDefault() },
-                                buttonText || 'למעבר'
-                            )
+                                {
+                                    className: 'card-button',
+                                    href: buttonUrl || '#',
+                                    onClick: (e) => e.preventDefault()
+                                },
+                                buttonText
+                            ) : null
                         )
                     )
                 )
             );
         },
-        save: function () { return null; } // динамический блок
+        save: function () {
+            return null; // Динамический блок с серверным рендерингом
+        }
     });
 })(window.wp);
