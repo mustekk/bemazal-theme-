@@ -372,6 +372,7 @@ function bemazal_auto_enqueue_block_libraries() {
         'tg/thumbs-gallery' => [ 'swiper', 'fancybox' ],
         'scb/swiper-carousel' => [ 'swiper' ],
         'bemazal/video-hero' => [ 'swiper' ],
+        'bemazal/image-hero' => [ 'swiper' ],
 
         // Fancybox + Masonry blocks
         'tg/fbmp-gallery' => [ 'fancybox', 'masonry' ],

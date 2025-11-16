@@ -40,6 +40,7 @@ export default defineConfig(({ command, mode }) => {
                     'block-carousel': path.resolve(themeRoot, 'src/scss/blocks/slider/carousel.scss'),
                     'block-image-card': path.resolve(themeRoot, 'src/scss/blocks/content/image-card.scss'),
                     'block-video-hero': path.resolve(themeRoot, 'src/scss/blocks/media/video-hero.scss'),
+                    'block-image-hero': path.resolve(themeRoot, 'src/scss/blocks/media/image-hero.scss'),
                 },
                 output: {
                     // Optimize chunk splitting for better caching
@@ -97,6 +98,7 @@ export default defineConfig(({ command, mode }) => {
                     /^wp-/,
                     /^masonry-/,
                     /^video-hero-/,
+                    /^image-hero-/,
                     /^bemazal-/,
                     // WordPress alignment classes
                     /^align/,
