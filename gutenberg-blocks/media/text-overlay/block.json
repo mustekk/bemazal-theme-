@@ -1,0 +1,106 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "bemazal/text-overlay",
+  "title": "Текстовый оверлей",
+  "category": "bemazal",
+  "icon": "cover-image",
+  "description": "Блок с изображением и текстовым контейнером, который заезжает поверх изображения",
+  "keywords": [
+    "overlay",
+    "text",
+    "image",
+    "оверлей",
+    "текст",
+    "изображение"
+  ],
+  "supports": {
+    "align": [
+      "wide",
+      "full"
+    ],
+    "anchor": true,
+    "spacing": {
+      "margin": true,
+      "padding": true
+    }
+  },
+  "attributes": {
+    "desktopImage": {
+      "type": "string",
+      "default": ""
+    },
+    "mobileImage": {
+      "type": "string",
+      "default": ""
+    },
+    "imageAlt": {
+      "type": "string",
+      "default": ""
+    },
+    "heading": {
+      "type": "string",
+      "default": ""
+    },
+    "text": {
+      "type": "string",
+      "default": ""
+    },
+    "buttonText": {
+      "type": "string",
+      "default": ""
+    },
+    "buttonUrl": {
+      "type": "string",
+      "default": ""
+    },
+    "buttonTarget": {
+      "type": "string",
+      "default": "_self"
+    },
+    "overlayPosition": {
+      "type": "string",
+      "default": "right"
+    },
+    "overlayWidth": {
+      "type": "number",
+      "default": 45
+    },
+    "overlayBackgroundColor": {
+      "type": "string",
+      "default": "#ffffff"
+    },
+    "overlayTextColor": {
+      "type": "string",
+      "default": "#000000"
+    },
+    "overlayPadding": {
+      "type": "number",
+      "default": 40
+    },
+    "textAlign": {
+      "type": "string",
+      "default": "right"
+    },
+    "minHeight": {
+      "type": "number",
+      "default": 500
+    },
+    "imageOverlayOpacity": {
+      "type": "number",
+      "default": 0
+    },
+    "overlayVerticalAlign": {
+      "type": "string",
+      "default": "center"
+    },
+    "buttonStyle": {
+      "type": "string",
+      "default": "outline"
+    }
+  },
+  "editorScript": "file:./index.js",
+  "style": "file:./style.css",
+  "editorStyle": "file:./editor.css",
+  "version": "1.0.0"
+}

@@ -1,0 +1,39 @@
+@charset "UTF-8";
+/**
+ * Text Overlay Block - Editor Styles
+ * Стили только для редактора WordPress (Gutenberg)
+ */
+.text-overlay-editor {
+  position: relative;
+  width: 100%;
+  background: #f0f0f0;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  overflow: hidden;
+}
+.text-overlay-editor .components-base-control {
+  margin-bottom: 0;
+}
+.text-overlay-editor .components-base-control__label {
+  display: none;
+}
+.text-overlay-editor .components-text-control__input {
+  margin-bottom: 0;
+}
+.text-overlay-editor .text-overlay-button-preview {
+  transition: all 0.3s ease;
+}
+.text-overlay-editor .text-overlay-button-preview:hover {
+  opacity: 0.8;
+}
+
+.components-panel__body .components-button-group {
+  display: flex;
+  gap: 4px;
+  width: 100%;
+}
+.components-panel__body .components-button-group .components-button {
+  flex: 1;
+}
+
+/*# sourceMappingURL=editor.css.map */

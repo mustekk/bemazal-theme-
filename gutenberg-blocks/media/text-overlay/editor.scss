@@ -1,0 +1,46 @@
+/**
+ * Text Overlay Block - Editor Styles
+ * Стили только для редактора WordPress (Gutenberg)
+ */
+
+.text-overlay-editor {
+  position: relative;
+  width: 100%;
+  background: #f0f0f0;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  overflow: hidden;
+
+  .components-base-control {
+    margin-bottom: 0;
+  }
+
+  .components-base-control__label {
+    display: none;
+  }
+
+  .components-text-control__input {
+    margin-bottom: 0;
+  }
+
+  .text-overlay-button-preview {
+    transition: all 0.3s ease;
+
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+}
+
+// Inspector controls styling
+.components-panel__body {
+  .components-button-group {
+    display: flex;
+    gap: 4px;
+    width: 100%;
+
+    .components-button {
+      flex: 1;
+    }
+  }
+}
