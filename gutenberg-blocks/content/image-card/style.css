@@ -42,11 +42,6 @@
     box-sizing: border-box;
     position: relative;
     z-index: 2;
-}
-
-/* Позиционирование карточки по вертикали */
-.bemazal-image-card.image-left .card-wrapper,
-.bemazal-image-card.image-right .card-wrapper {
     margin-top: -80px; /* Наложение на изображение сверху */
 }
 
@@ -121,8 +116,7 @@
 
 /* Адаптивность для планшетов */
 @media (max-width: 992px) {
-    .bemazal-image-card.image-left .card-wrapper,
-    .bemazal-image-card.image-right .card-wrapper {
+    .bemazal-image-card .card-wrapper {
         margin-top: -60px;
         padding: 0 15px;
     }
@@ -135,8 +129,7 @@
 
 /* Адаптивность для мобильных */
 @media (max-width: 576px) {
-    .bemazal-image-card.image-left .card-wrapper,
-    .bemazal-image-card.image-right .card-wrapper {
+    .bemazal-image-card .card-wrapper {
         margin-top: -40px;
         padding: 0 10px;
     }
