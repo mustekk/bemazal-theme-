@@ -32,32 +32,54 @@
         className: 'text-overlay-editor'
       });
 
-      // Вычисляем margin-top на основе вертикального выравнивания
-      const getMarginTop = () => {
-        if (a.overlayVerticalAlign === 'top') return '50px';
-        if (a.overlayVerticalAlign === 'bottom') return '-250px';
-        return '-150px'; // center
+      // Вычисляем позиционирование на основе настроек
+      const getContentStyles = () => {
+        const styles = {
+          backgroundColor: a.overlayBackgroundColor || '#ffffff',
+          color: a.overlayTextColor || '#000000',
+          padding: (a.overlayPadding || 40) + 'px',
+          textAlign: a.textAlign || 'right',
+          width: (a.overlayWidth || 45) + '%',
+          maxWidth: '600px',
+          position: 'relative',
+          boxShadow: '0 10px 40px rgba(0, 0, 0, 0.15)',
+          zIndex: 2
+        };
+
+        // Горизонтальное позиционирование
+        if (a.overlayPosition === 'left') {
+          styles.right = '-10%';
+          styles.order = -1;
+        } else if (a.overlayPosition === 'right') {
+          styles.left = '-10%';
+        } else {
+          // center
+          styles.position = 'absolute';
+          styles.left = '50%';
+          styles.transform = 'translateX(-50%)';
+        }
+
+        // Вертикальное выравнивание
+        if (a.overlayVerticalAlign === 'top') {
+          styles.alignSelf = 'flex-start';
+          styles.marginTop = '50px';
+        } else if (a.overlayVerticalAlign === 'bottom') {
+          styles.alignSelf = 'flex-end';
+          styles.marginBottom = '50px';
+        } else {
+          styles.alignSelf = 'center';
+        }
+
+        // Для центра по обеим осям
+        if (a.overlayPosition === 'center' && a.overlayVerticalAlign === 'center') {
+          styles.top = '50%';
+          styles.transform = 'translate(-50%, -50%)';
+        }
+
+        return styles;
       };
 
-      // Вычисляем margin-left/right на основе позиции
-      const getHorizontalMargin = () => {
-        if (a.overlayPosition === 'left') return { marginLeft: '5%', marginRight: 'auto' };
-        if (a.overlayPosition === 'center') return { marginLeft: 'auto', marginRight: 'auto' };
-        return { marginLeft: 'auto', marginRight: '5%' }; // right
-      };
-
-      const overlayStyles = {
-        backgroundColor: a.overlayBackgroundColor || '#ffffff',
-        color: a.overlayTextColor || '#000000',
-        padding: (a.overlayPadding || 40) + 'px',
-        textAlign: a.textAlign || 'right',
-        width: (a.overlayWidth || 45) + '%',
-        maxWidth: '600px',
-        position: 'relative',
-        marginTop: getMarginTop(),
-        boxShadow: '0 10px 40px rgba(0, 0, 0, 0.15)',
-        ...getHorizontalMargin()
-      };
+      const overlayStyles = getContentStyles();
 
       const inspector = el(
         InspectorControls,
@@ -264,15 +286,25 @@
           blockProps,
           a.desktopImage ? el(
             'div',
-            { style: { display: 'flex', flexDirection: 'column', width: '100%' } },
+            {
+              style: {
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+                width: '100%',
+                position: 'relative'
+              }
+            },
             el(
               'div',
               {
                 style: {
                   position: 'relative',
-                  width: '100%',
+                  flexShrink: 0,
+                  width: '60%',
                   minHeight: (a.minHeight || 500) + 'px',
-                  overflow: 'hidden'
+                  overflow: 'hidden',
+                  zIndex: 1
                 }
               },
               el('img', {
