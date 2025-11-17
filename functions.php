@@ -13,7 +13,7 @@
 
 if ( ! defined( 'BEMAZAL_VERSION' ) ) {
     // Version constant used for cache busting.  In production it will be replaced by the hashed file names.
-    define( 'BEMAZAL_VERSION', '1.0.0' );
+    define( 'BEMAZAL_VERSION', '1.1.0' ); // Updated for text-overlay block
 }
 
 
