@@ -30,6 +30,11 @@
 @import 'media/video-hero';
 @import 'media/text-overlay';
 
+// ========================================
+// Content blocks
+// ========================================
+@import 'content/timeline';
+
 // Global block enhancements
 .wp-block {
   &[class*="align"] {
