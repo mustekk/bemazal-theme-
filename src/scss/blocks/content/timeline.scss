@@ -4,19 +4,19 @@
  */
 
 .timeline-block {
-  --timeline-line-color: #0073aa;
+  --timeline-line-color: #2c3e50;
   --timeline-line-width: 4px;
-  --timeline-dot-color: #0073aa;
+  --timeline-dot-color: #2c3e50;
   --timeline-dot-size: 20px;
   --timeline-item-spacing: 40px;
-  --timeline-card-bg: #f9f9f9;
-  --timeline-card-border-color: #e0e0e0;
+  --timeline-card-bg: #ffffff;
+  --timeline-card-border-color: #d0d0d0;
   --timeline-card-border-width: 1px;
   --timeline-card-border-radius: 8px;
   --timeline-card-padding: 20px;
   --timeline-title-color: #1a1a1a;
   --timeline-title-size: 20px;
-  --timeline-desc-color: #666666;
+  --timeline-desc-color: #555555;
   --timeline-desc-size: 16px;
 
   width: 100%;
@@ -48,19 +48,18 @@
       padding-left: 30px;
     }
 
-    // Центральная линия
+    // Центральная линия (прерывистая)
     &::before {
       content: '';
       position: absolute;
-      left: calc(var(--timeline-dot-size) / 2);
+      left: calc(var(--timeline-dot-size) / 2 - var(--timeline-line-width) / 2);
       top: 0;
       bottom: 0;
-      width: var(--timeline-line-width);
-      background: var(--timeline-line-color);
+      border-left: var(--timeline-line-width) dashed var(--timeline-line-color);
       z-index: 0;
 
       @media (max-width: 768px) {
-        left: calc(var(--timeline-dot-size) / 2 - 10px);
+        left: calc(var(--timeline-dot-size) / 2 - var(--timeline-line-width) / 2 - 10px);
       }
     }
   }
@@ -81,25 +80,24 @@
 
   .timeline-dot {
     position: absolute;
-    left: 0;
+    left: calc(var(--timeline-dot-size) / -2);
     top: 5px;
     width: var(--timeline-dot-size);
     height: var(--timeline-dot-size);
     background: var(--timeline-dot-color);
-    border: 4px solid #fff;
+    border: 3px solid #fff;
     border-radius: 50%;
-    box-shadow: 0 0 0 2px var(--timeline-dot-color);
     z-index: 1;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 
     @media (max-width: 768px) {
-      left: -10px;
+      left: calc(var(--timeline-dot-size) / -2 - 10px);
     }
   }
 
   &.timeline-hover .timeline-item:hover .timeline-dot {
-    transform: scale(1.3);
-    box-shadow: 0 0 0 4px var(--timeline-dot-color), 0 4px 12px rgba(0, 0, 0, 0.2);
+    transform: scale(1.2);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   }
 }
 
@@ -117,15 +115,14 @@
     padding-top: 50px;
     min-width: min-content;
 
-    // Горизонтальная линия
+    // Горизонтальная линия (прерывистая)
     &::before {
       content: '';
       position: absolute;
       left: 0;
       right: 0;
-      top: calc(var(--timeline-dot-size) / 2 + 10px);
-      height: var(--timeline-line-width);
-      background: var(--timeline-line-color);
+      top: calc(var(--timeline-dot-size) / 2 + 10px - var(--timeline-line-width) / 2);
+      border-top: var(--timeline-line-width) dashed var(--timeline-line-color);
       z-index: 0;
     }
   }
@@ -154,9 +151,8 @@
     width: var(--timeline-dot-size);
     height: var(--timeline-dot-size);
     background: var(--timeline-dot-color);
-    border: 4px solid #fff;
+    border: 3px solid #fff;
     border-radius: 50%;
-    box-shadow: 0 0 0 2px var(--timeline-dot-color);
     z-index: 1;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
   }
@@ -166,8 +162,8 @@
   }
 
   &.timeline-hover .timeline-item:hover .timeline-dot {
-    transform: translateX(-50%) scale(1.3);
-    box-shadow: 0 0 0 4px var(--timeline-dot-color), 0 4px 12px rgba(0, 0, 0, 0.2);
+    transform: translateX(-50%) scale(1.2);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   }
 }
 
