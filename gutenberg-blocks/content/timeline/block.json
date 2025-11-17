@@ -51,11 +51,11 @@
     },
     "lineColor": {
       "type": "string",
-      "default": "#0073aa"
+      "default": "#2c3e50"
     },
     "dotColor": {
       "type": "string",
-      "default": "#0073aa"
+      "default": "#2c3e50"
     },
     "dotSize": {
       "type": "number",
@@ -71,11 +71,11 @@
     },
     "cardBackground": {
       "type": "string",
-      "default": "#f9f9f9"
+      "default": "#ffffff"
     },
     "cardBorderColor": {
       "type": "string",
-      "default": "#e0e0e0"
+      "default": "#d0d0d0"
     },
     "cardBorderWidth": {
       "type": "number",
@@ -99,7 +99,7 @@
     },
     "descriptionColor": {
       "type": "string",
-      "default": "#666666"
+      "default": "#555555"
     },
     "descriptionSize": {
       "type": "number",
