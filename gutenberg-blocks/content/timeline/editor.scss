@@ -1,0 +1,130 @@
+/**
+ * Timeline Block - Editor Styles
+ * Стили только для редактора WordPress (Gutenberg)
+ */
+
+.timeline-editor {
+  padding: 20px;
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+
+  h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 18px;
+    color: #1a1a1a;
+    font-weight: 600;
+  }
+
+  .timeline-items-list {
+    margin-bottom: 15px;
+  }
+
+  .timeline-item-editor {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 15px;
+    margin-bottom: 10px;
+    background: #f9f9f9;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background: #f0f0f0;
+      border-color: #0073aa;
+      box-shadow: 0 2px 8px rgba(0, 115, 170, 0.1);
+    }
+
+    .timeline-item-number {
+      flex-shrink: 0;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #0073aa, #005177);
+      color: #fff;
+      border-radius: 50%;
+      font-weight: 700;
+      font-size: 14px;
+      box-shadow: 0 2px 6px rgba(0, 115, 170, 0.3);
+    }
+
+    .timeline-item-content {
+      flex: 1;
+      min-width: 0;
+
+      strong {
+        color: #1a1a1a;
+        font-size: 15px;
+        line-height: 1.4;
+      }
+
+      p {
+        color: #666;
+        font-size: 13px;
+        line-height: 1.5;
+        margin: 5px 0 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+      }
+    }
+
+    .timeline-item-actions {
+      flex-shrink: 0;
+      display: flex;
+      gap: 4px;
+
+      .components-button {
+        min-width: 32px;
+        height: 32px;
+        padding: 6px;
+        border-radius: 4px;
+
+        &:hover:not(:disabled) {
+          background: #0073aa;
+          color: #fff;
+
+          &.is-destructive {
+            background: #d63638;
+          }
+        }
+
+        &:disabled {
+          opacity: 0.3;
+          cursor: not-allowed;
+        }
+      }
+    }
+  }
+}
+
+// Стили для модального окна
+.timeline-modal {
+  .components-modal__content {
+    padding: 20px;
+  }
+
+  .components-base-control {
+    margin-bottom: 16px;
+  }
+
+  .components-textarea-control__input {
+    min-height: 120px;
+    font-family: inherit;
+    font-size: 14px;
+  }
+}
+
+// Стили для ColorPicker в Inspector Controls
+.components-panel__body {
+  .components-color-picker {
+    margin-top: 8px;
+  }
+}

@@ -1,0 +1,121 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 2,
+  "name": "bemazal/timeline",
+  "title": "Timeline (Временная шкала)",
+  "category": "bemazal",
+  "icon": "list-view",
+  "description": "Блок для отображения событий во временной последовательности с заголовками и описаниями. Полностью адаптивный с гибкими настройками оформления.",
+  "keywords": [
+    "timeline",
+    "временная шкала",
+    "события",
+    "история",
+    "хронология"
+  ],
+  "supports": {
+    "align": [
+      "wide",
+      "full"
+    ],
+    "anchor": true,
+    "spacing": {
+      "margin": true,
+      "padding": true
+    }
+  },
+  "attributes": {
+    "items": {
+      "type": "array",
+      "default": [
+        {
+          "title": "Первое событие",
+          "description": "Описание первого события в вашей временной шкале"
+        },
+        {
+          "title": "Второе событие",
+          "description": "Описание второго события в вашей временной шкале"
+        }
+      ],
+      "items": {
+        "type": "object"
+      }
+    },
+    "orientation": {
+      "type": "string",
+      "default": "vertical"
+    },
+    "alignment": {
+      "type": "string",
+      "default": "center"
+    },
+    "lineColor": {
+      "type": "string",
+      "default": "#0073aa"
+    },
+    "dotColor": {
+      "type": "string",
+      "default": "#0073aa"
+    },
+    "dotSize": {
+      "type": "number",
+      "default": 20
+    },
+    "lineWidth": {
+      "type": "number",
+      "default": 4
+    },
+    "itemSpacing": {
+      "type": "number",
+      "default": 40
+    },
+    "cardBackground": {
+      "type": "string",
+      "default": "#f9f9f9"
+    },
+    "cardBorderColor": {
+      "type": "string",
+      "default": "#e0e0e0"
+    },
+    "cardBorderWidth": {
+      "type": "number",
+      "default": 1
+    },
+    "cardBorderRadius": {
+      "type": "number",
+      "default": 8
+    },
+    "cardPadding": {
+      "type": "number",
+      "default": 20
+    },
+    "titleColor": {
+      "type": "string",
+      "default": "#1a1a1a"
+    },
+    "titleSize": {
+      "type": "number",
+      "default": 20
+    },
+    "descriptionColor": {
+      "type": "string",
+      "default": "#666666"
+    },
+    "descriptionSize": {
+      "type": "number",
+      "default": 16
+    },
+    "animationEnabled": {
+      "type": "boolean",
+      "default": true
+    },
+    "hoverEffect": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "editorScript": "file:./index.js",
+  "style": "file:./style.css",
+  "editorStyle": "file:./editor.css",
+  "version": "1.0.0"
+}
