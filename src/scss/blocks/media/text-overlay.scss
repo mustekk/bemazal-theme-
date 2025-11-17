@@ -1,7 +1,7 @@
 /**
  * Text Overlay Block - Production Styles
  * Продакшн стили для блока Text Overlay
- * Контент "заезжает" на изображение через negative margin
+ * Контент накладывается на изображение через flexbox + negative left/right
  */
 
 .wp-block-bemazal-text-overlay {
@@ -11,14 +11,18 @@
   .text-overlay-container {
     width: 100%;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    align-items: center;
+    position: relative;
   }
 
   .text-overlay-image-wrapper {
     position: relative;
-    width: 100%;
+    flex-shrink: 0;
+    width: 60%;
     min-height: var(--text-overlay-min-height, 500px);
     overflow: hidden;
+    z-index: 1;
   }
 
   .text-overlay-image {
@@ -52,42 +56,50 @@
     transition: all 0.3s ease;
     z-index: 2;
 
-    // Базовый отступ вверх чтобы заехать на изображение
-    margin-top: -150px;
-
-    // Горизонтальное позиционирование через margin
-    &[data-position="left"],
-    [data-position="left"] & {
-      margin-left: 5%;
-      margin-right: auto;
-    }
-
-    &[data-position="center"],
-    [data-position="center"] & {
-      margin-left: auto;
-      margin-right: auto;
-    }
-
+    // Позиция справа - контент накладывается слева на изображение
     &[data-position="right"],
     [data-position="right"] & {
-      margin-left: auto;
-      margin-right: 5%;
+      left: -10%;
     }
 
-    // Вертикальное позиционирование через margin-top
+    // Позиция слева - контент накладывается справа на изображение
+    &[data-position="left"],
+    [data-position="left"] & {
+      right: -10%;
+      order: -1; // Ставим контент первым
+    }
+
+    // Позиция по центру - контент в центре изображения
+    &[data-position="center"],
+    [data-position="center"] & {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    // Вертикальное выравнивание
     &[data-vertical-align="top"],
     [data-vertical-align="top"] & {
+      align-self: flex-start;
       margin-top: 50px;
     }
 
     &[data-vertical-align="center"],
     [data-vertical-align="center"] & {
-      margin-top: -150px;
+      align-self: center;
     }
 
     &[data-vertical-align="bottom"],
     [data-vertical-align="bottom"] & {
-      margin-top: -250px;
+      align-self: flex-end;
+      margin-bottom: 50px;
+    }
+
+    // Для центра по вертикали и горизонтали
+    &[data-position="center"][data-vertical-align="center"],
+    [data-position="center"][data-vertical-align="center"] & {
+      top: 50%;
+      transform: translate(-50%, -50%);
     }
   }
 
@@ -161,27 +173,43 @@
 
   // Адаптивность для планшетов
   @media (max-width: 992px) {
+    .text-overlay-image-wrapper {
+      width: 55%;
+    }
+
     .text-overlay-content {
-      width: 60%;
+      width: 50%;
       padding: 30px;
-      margin-top: -120px;
+      left: -8%;
+      right: -8%;
     }
   }
 
   // Адаптивность для мобильных
   @media (max-width: 768px) {
+    .text-overlay-container {
+      flex-direction: column !important;
+      align-items: stretch !important;
+    }
+
     .text-overlay-image-wrapper {
+      width: 100% !important;
       min-height: 400px;
     }
 
     .text-overlay-content {
+      position: relative !important;
       width: 90% !important;
       max-width: none;
       padding: 25px 20px;
-      margin-top: -100px !important;
-      margin-left: 5% !important;
-      margin-right: 5% !important;
+      margin: -80px auto 0 auto !important;
+      left: 0 !important;
+      right: 0 !important;
+      order: 0 !important;
+      align-self: center !important;
       text-align: center !important;
+      transform: none !important;
+      top: auto !important;
     }
   }
 
