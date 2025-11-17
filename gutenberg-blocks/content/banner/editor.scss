@@ -1,0 +1,31 @@
+// Content Banner - Editor Styles
+// Стили только для редактора WordPress (Gutenberg)
+
+.content-banner-editor {
+  border: 2px dashed #ccc;
+  border-radius: 4px;
+  min-height: 400px;
+  overflow: hidden;
+
+  .rich-text {
+    outline: none;
+
+    &:focus {
+      outline: 2px solid #007cba;
+      outline-offset: 2px;
+    }
+
+    &[data-is-placeholder-visible="true"]::before {
+      opacity: 0.6;
+    }
+  }
+
+  // Prevent layout shifts in editor
+  h2.rich-text {
+    margin: 0 0 1rem 0;
+  }
+
+  p.rich-text {
+    margin: 0 0 1.5rem 0;
+  }
+}

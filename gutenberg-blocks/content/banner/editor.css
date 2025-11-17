@@ -1,0 +1,24 @@
+.content-banner-editor {
+  border: 2px dashed #ccc;
+  border-radius: 4px;
+  min-height: 400px;
+  overflow: hidden;
+}
+.content-banner-editor .rich-text {
+  outline: none;
+}
+.content-banner-editor .rich-text:focus {
+  outline: 2px solid #007cba;
+  outline-offset: 2px;
+}
+.content-banner-editor .rich-text[data-is-placeholder-visible=true]::before {
+  opacity: 0.6;
+}
+.content-banner-editor h2.rich-text {
+  margin: 0 0 1rem 0;
+}
+.content-banner-editor p.rich-text {
+  margin: 0 0 1.5rem 0;
+}
+
+/*# sourceMappingURL=editor.css.map */

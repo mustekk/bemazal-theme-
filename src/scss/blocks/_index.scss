@@ -35,6 +35,11 @@
 // ========================================
 @import 'content/timeline';
 
+// ========================================
+// Content blocks
+// ========================================
+@import 'content/banner';
+
 // Global block enhancements
 .wp-block {
   &[class*="align"] {
