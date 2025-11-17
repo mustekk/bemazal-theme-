@@ -1,0 +1,109 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "bemazal/content-banner",
+  "title": "Контент Баннер",
+  "category": "bemazal",
+  "icon": "welcome-view-site",
+  "description": "Универсальный баннер с заголовком, текстом и кнопкой. Поддерживает фон (цвет или изображение) и множество настроек выравнивания.",
+  "keywords": [
+    "banner",
+    "баннер",
+    "hero",
+    "content",
+    "контент"
+  ],
+  "supports": {
+    "align": [
+      "wide",
+      "full"
+    ],
+    "anchor": true,
+    "spacing": {
+      "margin": true,
+      "padding": true
+    }
+  },
+  "attributes": {
+    "heading": {
+      "type": "string",
+      "default": ""
+    },
+    "paragraph": {
+      "type": "string",
+      "default": ""
+    },
+    "buttonText": {
+      "type": "string",
+      "default": ""
+    },
+    "buttonUrl": {
+      "type": "string",
+      "default": ""
+    },
+    "buttonTarget": {
+      "type": "string",
+      "default": "_self"
+    },
+    "alignHorizontal": {
+      "type": "string",
+      "default": "center"
+    },
+    "alignVertical": {
+      "type": "string",
+      "default": "center"
+    },
+    "backgroundType": {
+      "type": "string",
+      "default": "color"
+    },
+    "backgroundColor": {
+      "type": "string",
+      "default": "#0066cc"
+    },
+    "backgroundImage": {
+      "type": "string",
+      "default": ""
+    },
+    "backgroundImageMobile": {
+      "type": "string",
+      "default": ""
+    },
+    "minHeight": {
+      "type": "number",
+      "default": 400
+    },
+    "overlayOpacity": {
+      "type": "number",
+      "default": 0.3
+    },
+    "textColor": {
+      "type": "string",
+      "default": "#ffffff"
+    },
+    "buttonColor": {
+      "type": "string",
+      "default": "#ffffff"
+    },
+    "buttonTextColor": {
+      "type": "string",
+      "default": "#0066cc"
+    },
+    "buttonStyle": {
+      "type": "string",
+      "default": "filled"
+    },
+    "maxWidth": {
+      "type": "number",
+      "default": 800
+    },
+    "contentPadding": {
+      "type": "number",
+      "default": 40
+    }
+  },
+  "editorScript": "file:./index.js",
+  "style": "file:./style.css",
+  "editorStyle": "file:./editor.css",
+  "version": "1.0.0"
+}

@@ -29,6 +29,11 @@
 @import 'media/image-hero';
 @import 'media/video-hero';
 
+// ========================================
+// Content blocks
+// ========================================
+@import 'content/banner';
+
 // Global block enhancements
 .wp-block {
   &[class*="align"] {
